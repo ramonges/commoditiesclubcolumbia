@@ -48,8 +48,8 @@ const Header = () => {
           </nav>
           
           <div className="header-cta">
-            <Link to="/events#next-dinner" className="btn btn-primary">Next Dinner</Link>
-            <Link to="/#partner" className="btn btn-secondary">Partner With Us</Link>
+            <Link to="/events#next-dinner" className="btn btn-primary">Next Event</Link>
+            <a href="mailto:tj2622@columbia.edu" className="btn btn-secondary">Partner With Us</a>
           </div>
           
           <button 

@@ -168,7 +168,7 @@ const Home = () => {
               We collaborate with leading firms in commodities trading, energy, agriculture, and finance 
               to provide our members with industry insights, networking opportunities, and career pathways.
             </p>
-            <a href="mailto:partnerships@columbiacommodityclub.org" className="btn btn-primary btn-large">Get In Touch</a>
+            <a href="mailto:tj2622@columbia.edu" className="btn btn-primary btn-large">Get In Touch</a>
           </div>
         </div>
       </section>

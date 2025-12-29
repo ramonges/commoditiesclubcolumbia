@@ -564,7 +564,7 @@ const Admin = () => {
                     onChange={(e) => setEventFeatured(e.target.checked)}
                     className="checkbox-input"
                   />
-                  <span>Mark as Featured (Next Dinner)</span>
+                  <span>Mark as Featured (Next Event)</span>
                 </label>
               </div>
             </div>

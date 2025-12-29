@@ -30,7 +30,7 @@ const Footer = () => {
               <h4 className="footer-heading">Connect</h4>
               <ul className="footer-list">
                 <li><a href="mailto:info@columbiacommodityclub.org">Email</a></li>
-                <li><Link to="/#partner">Partner With Us</Link></li>
+                <li><a href="mailto:tj2622@columbia.edu">Partner With Us</a></li>
               </ul>
             </div>
           </div>
