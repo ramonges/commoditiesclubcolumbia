@@ -12,6 +12,15 @@
   border-bottom: 2px solid var(--color-primary);
 }
 
+.empty-events {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-muted);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
 /* Events Grid - Reused from Home */
 .events-grid {
   display: grid;

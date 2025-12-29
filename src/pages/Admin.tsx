@@ -15,9 +15,25 @@ interface ArticleBlock {
 const Admin = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(authService.getCurrentUser());
+  const [activeTab, setActiveTab] = useState<'article' | 'event'>('article');
+  
+  // Article state
   const [blocks, setBlocks] = useState<ArticleBlock[]>([]);
   const [category, setCategory] = useState('energy');
   const [subcategory, setSubcategory] = useState('');
+  
+  // Event state
+  const [eventMonth, setEventMonth] = useState('');
+  const [eventDay, setEventDay] = useState('');
+  const [eventType, setEventType] = useState('Dinner');
+  const [eventTitle, setEventTitle] = useState('');
+  const [eventSummary, setEventSummary] = useState('');
+  const [eventAddress, setEventAddress] = useState('');
+  const [eventTimeFrom, setEventTimeFrom] = useState('');
+  const [eventTimeTo, setEventTimeTo] = useState('');
+  const [eventRsvpLink, setEventRsvpLink] = useState('');
+  const [eventFeatured, setEventFeatured] = useState(false);
+  
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -158,6 +174,69 @@ const Admin = () => {
     }
   };
 
+  const handleEventSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    if (!eventMonth || !eventDay || !eventTitle || !eventSummary || !eventAddress || !eventTimeFrom) {
+      setMessage({ type: 'error', text: 'Please fill in all required fields' });
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      // Parse date from month and day
+      const currentYear = new Date().getFullYear();
+      const dateString = `${currentYear}-${eventMonth.padStart(2, '0')}-${eventDay.padStart(2, '0')}`;
+      const eventDateObj = new Date(dateString);
+      
+      // Check if event is in the past
+      const isPast = eventDateObj < new Date();
+
+      const { error } = await supabase
+        .from('events')
+        .insert({
+          event_date: dateString,
+          event_type: eventType,
+          title: eventTitle,
+          summary: eventSummary,
+          address: eventAddress,
+          time_from: eventTimeFrom,
+          time_to: eventTimeTo || null,
+          rsvp_link: eventRsvpLink || null,
+          featured: eventFeatured,
+          is_past: isPast,
+          author_email: user.email
+        });
+
+      if (error) throw error;
+
+      setMessage({ type: 'success', text: 'Event created successfully!' });
+      
+      // Reset form
+      setEventMonth('');
+      setEventDay('');
+      setEventType('Dinner');
+      setEventTitle('');
+      setEventSummary('');
+      setEventAddress('');
+      setEventTimeFrom('');
+      setEventTimeTo('');
+      setEventRsvpLink('');
+      setEventFeatured(false);
+      
+      setTimeout(() => {
+        navigate('/events');
+      }, 2000);
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to create event' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogout = () => {
     authService.logout();
     navigate('/');
@@ -167,15 +246,38 @@ const Admin = () => {
     return null;
   }
 
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
   return (
     <div className="admin-page">
       <div className="container">
         <div className="admin-header">
           <div>
-            <h1 className="admin-title">Article Editor</h1>
+            <h1 className="admin-title">Admin Panel</h1>
             <p className="admin-subtitle">Welcome, {user.name}</p>
           </div>
           <button onClick={handleLogout} className="btn btn-secondary">Logout</button>
+        </div>
+
+        {/* Tabs */}
+        <div className="admin-tabs">
+          <button
+            className={`admin-tab ${activeTab === 'article' ? 'active' : ''}`}
+            onClick={() => setActiveTab('article')}
+          >
+            Create Article
+          </button>
+          <button
+            className={`admin-tab ${activeTab === 'event' ? 'active' : ''}`}
+            onClick={() => setActiveTab('event')}
+          >
+            Create Event
+          </button>
         </div>
 
         {message && (
@@ -184,7 +286,9 @@ const Admin = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="admin-form">
+        {/* Article Form */}
+        {activeTab === 'article' && (
+          <form onSubmit={handleSubmit} className="admin-form">
           <div className="form-section">
             <h3 className="section-title">Category & Subcategory</h3>
             <div className="form-row">
@@ -319,6 +423,159 @@ const Admin = () => {
             </button>
           </div>
         </form>
+        )}
+
+        {/* Event Form */}
+        {activeTab === 'event' && (
+          <form onSubmit={handleEventSubmit} className="admin-form">
+            <div className="form-section">
+              <h3 className="section-title">Event Details</h3>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Month *</label>
+                  <select
+                    value={eventMonth}
+                    onChange={(e) => setEventMonth(e.target.value)}
+                    className="form-select"
+                    required
+                  >
+                    <option value="">Select Month</option>
+                    {months.map((month, index) => (
+                      <option key={month} value={(index + 1).toString().padStart(2, '0')}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Day *</label>
+                  <select
+                    value={eventDay}
+                    onChange={(e) => setEventDay(e.target.value)}
+                    className="form-select"
+                    required
+                  >
+                    <option value="">Select Day</option>
+                    {days.map(day => (
+                      <option key={day} value={day.toString().padStart(2, '0')}>
+                        {day}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Event Type *</label>
+                  <select
+                    value={eventType}
+                    onChange={(e) => setEventType(e.target.value)}
+                    className="form-select"
+                    required
+                  >
+                    <option value="Dinner">Dinner</option>
+                    <option value="Speaker Event">Speaker Event</option>
+                    <option value="Company Visit">Company Visit</option>
+                    <option value="Members Meeting">Members Meeting</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="form-section">
+              <div className="form-group">
+                <label>Title *</label>
+                <input
+                  type="text"
+                  value={eventTitle}
+                  onChange={(e) => setEventTitle(e.target.value)}
+                  className="form-input"
+                  placeholder="Event title"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Event Summary *</label>
+                <textarea
+                  value={eventSummary}
+                  onChange={(e) => setEventSummary(e.target.value)}
+                  className="block-textarea"
+                  rows={6}
+                  placeholder="Describe the event..."
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-section">
+              <h3 className="section-title">Location & Time</h3>
+              <div className="form-group">
+                <label>Address *</label>
+                <input
+                  type="text"
+                  value={eventAddress}
+                  onChange={(e) => setEventAddress(e.target.value)}
+                  className="form-input"
+                  placeholder="📍 Event location address"
+                  required
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Time From *</label>
+                  <input
+                    type="text"
+                    value={eventTimeFrom}
+                    onChange={(e) => setEventTimeFrom(e.target.value)}
+                    className="form-input"
+                    placeholder="e.g., 6:00 PM"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Time To</label>
+                  <input
+                    type="text"
+                    value={eventTimeTo}
+                    onChange={(e) => setEventTimeTo(e.target.value)}
+                    className="form-input"
+                    placeholder="e.g., 9:00 PM (optional)"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-section">
+              <h3 className="section-title">RSVP & Options</h3>
+              <div className="form-group">
+                <label>RSVP Link</label>
+                <input
+                  type="url"
+                  value={eventRsvpLink}
+                  onChange={(e) => setEventRsvpLink(e.target.value)}
+                  className="form-input"
+                  placeholder="https://... or mailto:events@..."
+                />
+                <small className="form-hint">Enter a URL or email link (mailto:email@example.com)</small>
+              </div>
+              <div className="form-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={eventFeatured}
+                    onChange={(e) => setEventFeatured(e.target.checked)}
+                    className="checkbox-input"
+                  />
+                  <span>Mark as Featured (Next Dinner)</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
+                {loading ? 'Creating...' : 'Create Event'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
