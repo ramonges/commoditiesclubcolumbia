@@ -11,3 +11,4 @@ export const TEAM_CREDENTIALS = {
   'ram2315@columbia.edu': { password: 'ram2315', name: 'Raphael Monges' }
 };
 
+

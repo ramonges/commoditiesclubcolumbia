@@ -116,3 +116,4 @@ The database has three main tables:
 - Verify category/subcategory match the filter
 - Check browser console for API errors
 
+

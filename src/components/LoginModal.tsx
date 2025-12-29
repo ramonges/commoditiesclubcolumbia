@@ -75,3 +75,4 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
 
 export default LoginModal;
 
+

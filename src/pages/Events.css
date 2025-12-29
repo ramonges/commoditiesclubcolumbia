@@ -150,12 +150,17 @@
 }
 
 @media (max-width: 768px) {
+  .events-section-title {
+    font-size: 1.5rem;
+  }
+  
   .events-grid {
     grid-template-columns: 1fr;
   }
   
   .event-card {
     flex-direction: column;
+    padding: var(--spacing-md);
   }
   
   .event-card-date {
@@ -163,6 +168,29 @@
     justify-content: flex-start;
     gap: var(--spacing-sm);
     min-width: auto;
+    width: 100%;
+  }
+  
+  .event-card-title {
+    font-size: 1.125rem;
+  }
+  
+  .event-card-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .events-section-title {
+    font-size: 1.25rem;
+  }
+  
+  .event-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .event-card-cta .btn {
+    width: 100%;
   }
 }
 

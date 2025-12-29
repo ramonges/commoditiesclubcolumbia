@@ -135,6 +135,10 @@
 }
 
 @media (max-width: 768px) {
+  .footer {
+    padding: var(--spacing-lg) 0 var(--spacing-md);
+  }
+  
   .footer-content {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
@@ -147,5 +151,45 @@
   
   .footer-right {
     align-items: flex-start;
+  }
+  
+  .footer-logo img {
+    height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: var(--spacing-md) 0;
+  }
+  
+  .footer-content {
+    gap: var(--spacing-md);
+  }
+  
+  .footer-logo img {
+    height: 60px;
+  }
+  
+  .footer-heading {
+    font-size: 0.95rem;
+  }
+  
+  .footer-list a,
+  .footer-tagline {
+    font-size: 0.85rem;
+  }
+  
+  .footer-linkedin,
+  .footer-login-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.85rem;
+    padding: var(--spacing-sm);
+  }
+  
+  .linkedin-icon {
+    width: 24px;
+    height: 24px;
   }
 }

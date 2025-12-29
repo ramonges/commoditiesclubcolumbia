@@ -16,3 +16,4 @@ ALTER TABLE team_members DROP COLUMN IF EXISTS password_hash;
 --   ('ram2315@columbia.edu', 'Raphael Monges')
 -- ON CONFLICT (email) DO NOTHING;
 
+

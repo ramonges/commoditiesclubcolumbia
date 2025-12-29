@@ -41,3 +41,4 @@ CREATE POLICY "Team members can update events" ON events
 CREATE POLICY "Team members can delete events" ON events
   FOR DELETE USING (true);
 
+

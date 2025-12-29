@@ -297,6 +297,24 @@
 }
 
 @media (max-width: 768px) {
+  .admin-page {
+    padding: var(--spacing-md) 0;
+  }
+  
+  .admin-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .admin-title {
+    font-size: 2rem;
+  }
+  
+  .admin-form {
+    padding: var(--spacing-lg);
+  }
+  
   .form-row {
     grid-template-columns: 1fr;
   }
@@ -306,9 +324,79 @@
     align-items: flex-start;
   }
   
+  .block-buttons {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  .block-buttons .btn {
+    flex: 1;
+    min-width: calc(50% - var(--spacing-xs));
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-page {
+    padding: var(--spacing-sm) 0;
+  }
+  
   .admin-header {
-    flex-direction: column;
-    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .admin-title {
+    font-size: 1.5rem;
+  }
+  
+  .admin-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .admin-tabs {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .admin-tab {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.9rem;
+  }
+  
+  .admin-form {
+    padding: var(--spacing-md);
+  }
+  
+  .form-section {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .section-title {
+    font-size: 1.125rem;
+  }
+  
+  .form-select,
+  .form-input,
+  .block-textarea {
+    font-size: 0.9rem;
+    padding: 0.625rem;
+  }
+  
+  .block-buttons .btn {
+    width: 100%;
+    min-width: 100%;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .block-item {
+    padding: var(--spacing-sm);
+  }
+  
+  .form-actions {
+    margin-top: var(--spacing-md);
+  }
+  
+  .form-actions .btn {
+    width: 100%;
   }
 }
 

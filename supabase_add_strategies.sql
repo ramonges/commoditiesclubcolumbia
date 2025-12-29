@@ -8,3 +8,4 @@ ALTER TABLE articles DROP CONSTRAINT IF EXISTS articles_category_check;
 ALTER TABLE articles ADD CONSTRAINT articles_category_check 
   CHECK (category IN ('energy', 'precious-metals', 'base-metals', 'agriculture', 'strategies'));
 
+

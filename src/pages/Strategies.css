@@ -189,8 +189,45 @@
 }
 
 @media (max-width: 768px) {
+  .strategy-article {
+    padding: var(--spacing-lg);
+  }
+  
   .strategy-article-title {
     font-size: 1.5rem;
+  }
+  
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-select {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .strategy-article {
+    padding: var(--spacing-md);
+  }
+  
+  .strategy-article-title {
+    font-size: 1.25rem;
+  }
+  
+  .strategy-article-content h3 {
+    font-size: 1.125rem;
+  }
+  
+  .strategy-article-content p,
+  .strategy-text {
+    font-size: 0.95rem;
+  }
+  
+  .strategy-article-meta {
+    flex-direction: column;
+    gap: var(--spacing-xs);
   }
 }
 
