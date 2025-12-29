@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import News from './pages/News';
 import Strategies from './pages/Strategies';
 import Events from './pages/Events';
+import Admin from './pages/Admin';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Route path="/news" element={<News />} />
             <Route path="/strategies" element={<Strategies />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
         <Footer />

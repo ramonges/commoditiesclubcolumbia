@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { authService } from '../lib/auth';
+import LoginModal from './LoginModal';
 import './Footer.css';
 
 const Footer = () => {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const isAuthenticated = authService.isAuthenticated();
+
   return (
     <footer className="footer">
       <div className="container">
@@ -49,7 +55,24 @@ const Footer = () => {
               </svg>
               <span>LinkedIn</span>
             </a>
+            {!isAuthenticated ? (
+              <button 
+                onClick={() => setIsLoginOpen(true)}
+                className="footer-login-btn"
+              >
+                Log In Team
+              </button>
+            ) : (
+              <Link to="/admin" className="footer-login-btn">
+                Admin Panel
+              </Link>
+            )}
           </div>
+          <LoginModal 
+            isOpen={isLoginOpen} 
+            onClose={() => setIsLoginOpen(false)}
+            onLogin={() => window.location.reload()}
+          />
         </div>
         <div className="footer-bottom">
           <p>&copy; 2024 Columbia Commodity Club. All rights reserved.</p>
