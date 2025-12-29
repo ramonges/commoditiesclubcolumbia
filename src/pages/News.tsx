@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import './News.css';
 
@@ -229,7 +230,7 @@ const News = () => {
                         <p className="news-card-summary">{getArticleSummary(article)}</p>
                         <div className="news-card-footer">
                           <span className="news-card-date">{formatDate(article.published_at)}</span>
-                          <a href="#" className="news-card-link">Read More →</a>
+                          <Link to={`/article/${article.id}`} className="news-card-link">Read More →</Link>
                         </div>
                       </article>
                     ))}
@@ -268,7 +269,7 @@ const News = () => {
                       <p className="news-card-summary">{getArticleSummary(article)}</p>
                       <div className="news-card-footer">
                         <span className="news-card-date">{formatDate(article.published_at)}</span>
-                        <a href="#" className="news-card-link">Read More →</a>
+                        <Link to={`/article/${article.id}`} className="news-card-link">Read More →</Link>
                       </div>
                     </article>
                   );
