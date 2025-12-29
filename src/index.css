@@ -34,7 +34,7 @@
   
   /* Layout */
   --container-width: 1200px;
-  --header-height: 80px;
+  --header-height: 100px;
   
   /* Transitions */
   --transition-fast: 0.15s ease;

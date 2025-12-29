@@ -1,14 +1,1 @@
-LOGO PLACEHOLDER
-
-Please add your Columbia Commodity Club logo image here.
-
-File name: logo.png
-Recommended size: 200px width (height will scale proportionally)
-Format: PNG with transparent background (recommended) or JPG
-
-The logo will be displayed:
-- Top-left of the header navigation (50px height)
-- Footer section (50px height)
-
-If the logo file is not found, a text fallback "CCC" will be displayed automatically.
 
