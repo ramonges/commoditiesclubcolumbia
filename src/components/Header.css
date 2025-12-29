@@ -67,6 +67,12 @@
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .header-cta {
+    display: none;
+  }
+}
+
 .mobile-menu-toggle {
   display: none;
   flex-direction: column;
@@ -146,17 +152,6 @@
   
   .logo img {
     height: 50px;
-  }
-  
-  .header-cta {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .header-cta .btn {
-    width: 100%;
-    font-size: 0.85rem;
-    padding: 0.625rem 1rem;
   }
 }
 
