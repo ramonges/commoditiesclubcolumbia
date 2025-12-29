@@ -14,7 +14,8 @@
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
+  padding: var(--spacing-xs) 0;
 }
 
 .logo img {
