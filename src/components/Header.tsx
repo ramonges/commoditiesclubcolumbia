@@ -4,7 +4,6 @@ import './Header.css';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isNewsDropdownOpen, setIsNewsDropdownOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -30,24 +29,10 @@ const Header = () => {
                   Home
                 </Link>
               </li>
-              <li 
-                className="nav-dropdown"
-                onMouseEnter={() => setIsNewsDropdownOpen(true)}
-                onMouseLeave={() => setIsNewsDropdownOpen(false)}
-              >
-                <Link 
-                  to="/news" 
-                  className={`nav-link ${isActive('/news') ? 'active' : ''}`}
-                >
-                  News <span className="dropdown-arrow">▼</span>
+              <li>
+                <Link to="/news" className={`nav-link ${isActive('/news') ? 'active' : ''}`}>
+                  News
                 </Link>
-                <ul className={`dropdown-menu ${isNewsDropdownOpen ? 'open' : ''}`}>
-                  <li><Link to="/news#energy">Energy</Link></li>
-                  <li><Link to="/news#precious-metals">Precious Metals</Link></li>
-                  <li><Link to="/news#base-metals">Base Metals</Link></li>
-                  <li><Link to="/news#agriculture">Agriculture</Link></li>
-                  <li><Link to="/news#weekly-strategies">Weekly Trading Strategies</Link></li>
-                </ul>
               </li>
               <li>
                 <Link to="/strategies" className={`nav-link ${isActive('/strategies') ? 'active' : ''}`}>
@@ -83,4 +68,3 @@ const Header = () => {
 };
 
 export default Header;
-

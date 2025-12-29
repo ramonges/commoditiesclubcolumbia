@@ -1,8 +1,20 @@
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './News.css';
 
+interface NewsArticle {
+  id: string;
+  title: string;
+  summary: string;
+  date: string;
+  category: string;
+  subcategory: string;
+}
+
 const News = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
+
   useEffect(() => {
     // Smooth scroll to hash on mount
     const hash = window.location.hash;
@@ -16,6 +28,72 @@ const News = () => {
     }
   }, []);
 
+  const articles: NewsArticle[] = [
+    // Energy - Oil
+    { id: '1', title: 'Oil Market Dynamics: Supply Constraints and Demand Outlook', summary: 'Analysis of recent OPEC+ decisions and their impact on global crude prices, examining both short-term volatility and longer-term structural shifts in the energy landscape.', date: 'March 15, 2024', category: 'energy', subcategory: 'oil' },
+    { id: '2', title: 'Crude Oil Futures: Forward Curve Analysis', summary: 'Examining the WTI forward curve structure and the economics of storage, identifying potential arbitrage opportunities.', date: 'March 10, 2024', category: 'energy', subcategory: 'oil' },
+    // Energy - Natural Gas
+    { id: '3', title: 'Natural Gas: Winter Demand Patterns and Storage Levels', summary: 'Examining the relationship between weather patterns, storage inventories, and natural gas pricing dynamics in North American markets.', date: 'March 8, 2024', category: 'energy', subcategory: 'natural-gas' },
+    { id: '4', title: 'LNG Markets: Global Trade Flows and Pricing', summary: 'Analyzing the evolution of liquefied natural gas markets and their impact on regional pricing differentials.', date: 'March 5, 2024', category: 'energy', subcategory: 'natural-gas' },
+    // Energy - Power
+    { id: '5', title: 'Power Markets: Renewable Integration Challenges', summary: 'Exploring how the shift toward renewable energy sources is reshaping demand patterns and grid stability in power markets.', date: 'March 1, 2024', category: 'energy', subcategory: 'power' },
+    { id: '6', title: 'Electricity Pricing: Regional Variations and Policy Impacts', summary: 'Examining how policy decisions and infrastructure investments affect electricity pricing across different regions.', date: 'February 28, 2024', category: 'energy', subcategory: 'power' },
+    // Precious Metals - Gold
+    { id: '7', title: 'Gold Rally: Central Bank Policy and Safe Haven Demand', summary: 'Exploring the factors driving gold prices to multi-year highs, with focus on monetary policy expectations and geopolitical risk premiums.', date: 'March 12, 2024', category: 'precious-metals', subcategory: 'gold' },
+    { id: '8', title: 'Gold Futures: Technical Analysis and Market Sentiment', summary: 'Analyzing gold futures positioning and the relationship between ETF flows and physical demand.', date: 'March 7, 2024', category: 'precious-metals', subcategory: 'gold' },
+    // Precious Metals - Silver
+    { id: '9', title: 'Silver: Industrial Demand Meets Monetary Hedge', summary: 'Analyzing silver\'s dual role as both an industrial metal and a monetary asset, and how this creates unique price dynamics.', date: 'March 5, 2024', category: 'precious-metals', subcategory: 'silver' },
+    { id: '10', title: 'Silver Market: Solar Panel Demand and Supply Constraints', summary: 'Examining how the growth in solar panel manufacturing is affecting silver demand and pricing.', date: 'March 2, 2024', category: 'precious-metals', subcategory: 'silver' },
+    // Precious Metals - Copper (user mentioned copper for precious, but it's typically base metal - I'll include it here as requested)
+    { id: '11', title: 'Copper: The Barometer of Global Economic Health', summary: 'Understanding copper\'s role as an economic indicator and analyzing current market trends in the context of global growth expectations.', date: 'March 10, 2024', category: 'precious-metals', subcategory: 'copper' },
+    // Base Metals
+    { id: '12', title: 'Aluminum: Energy Costs and Supply Chain Dynamics', summary: 'Examining how energy prices impact aluminum production costs and the resulting effects on global supply chains and pricing.', date: 'March 3, 2024', category: 'base-metals', subcategory: 'aluminum' },
+    { id: '13', title: 'Zinc and Lead: Infrastructure Investment and Battery Demand', summary: 'Analyzing the impact of infrastructure spending and battery technology on zinc and lead markets, including supply constraints.', date: 'February 25, 2024', category: 'base-metals', subcategory: 'zinc-lead' },
+    { id: '14', title: 'Nickel: EV Battery Demand and Supply Chain Evolution', summary: 'Exploring how electric vehicle production is reshaping nickel demand and the implications for mining and refining capacity.', date: 'February 22, 2024', category: 'base-metals', subcategory: 'nickel' },
+    // Agriculture
+    { id: '15', title: 'Grain Markets: Weather Patterns and Export Dynamics', summary: 'Assessing the impact of El Niño on crop yields and the evolving trade flows in global grain markets, particularly wheat and corn.', date: 'March 10, 2024', category: 'agriculture', subcategory: 'grains' },
+    { id: '16', title: 'Coffee: Climate Change and Supply Chain Resilience', summary: 'Exploring how changing weather patterns are affecting coffee production regions and the implications for global supply and pricing.', date: 'March 7, 2024', category: 'agriculture', subcategory: 'soft-commodities' },
+    { id: '17', title: 'Sugar: Brazilian Production and Global Trade Flows', summary: 'Analyzing Brazil\'s role as a major sugar producer and exporter, and how production cycles affect global pricing dynamics.', date: 'March 2, 2024', category: 'agriculture', subcategory: 'soft-commodities' },
+  ];
+
+  const categories = [
+    { id: 'energy', name: 'Energy', subcategories: [
+      { id: 'oil', name: 'Oil' },
+      { id: 'natural-gas', name: 'Natural Gas' },
+      { id: 'power', name: 'Power' }
+    ]},
+    { id: 'precious-metals', name: 'Precious Metals', subcategories: [
+      { id: 'gold', name: 'Gold' },
+      { id: 'silver', name: 'Silver' },
+      { id: 'copper', name: 'Copper' }
+    ]},
+    { id: 'base-metals', name: 'Base Metals', subcategories: [
+      { id: 'aluminum', name: 'Aluminum' },
+      { id: 'zinc-lead', name: 'Zinc & Lead' },
+      { id: 'nickel', name: 'Nickel' }
+    ]},
+    { id: 'agriculture', name: 'Agriculture', subcategories: [
+      { id: 'grains', name: 'Grains' },
+      { id: 'soft-commodities', name: 'Soft Commodities' }
+    ]}
+  ];
+
+  const filteredArticles = articles.filter(article => {
+    if (selectedCategory === 'all') return true;
+    if (article.category !== selectedCategory) return false;
+    if (selectedSubcategory === 'all') return true;
+    return article.subcategory === selectedSubcategory;
+  });
+
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setSelectedSubcategory('all');
+  };
+
+  const getCategoryArticles = (categoryId: string) => {
+    return articles.filter(a => a.category === categoryId);
+  };
+
   return (
     <>
       {/* Page Header */}
@@ -26,238 +104,127 @@ const News = () => {
         </div>
       </section>
 
+      {/* Filter Section */}
+      <section className="section section-filters">
+        <div className="container">
+          <div className="filters-container">
+            <div className="filter-group">
+              <label className="filter-label">Category</label>
+              <select 
+                className="filter-select"
+                value={selectedCategory}
+                onChange={(e) => handleCategoryChange(e.target.value)}
+              >
+                <option value="all">All Categories</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+            {selectedCategory !== 'all' && (
+              <div className="filter-group">
+                <label className="filter-label">Subcategory</label>
+                <select 
+                  className="filter-select"
+                  value={selectedSubcategory}
+                  onChange={(e) => setSelectedSubcategory(e.target.value)}
+                >
+                  <option value="all">All {categories.find(c => c.id === selectedCategory)?.name}</option>
+                  {categories.find(c => c.id === selectedCategory)?.subcategories.map(sub => (
+                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* News Categories */}
       <section className="section section-news-page">
         <div className="container">
-          {/* Energy */}
-          <div className="news-category" id="energy">
-            <div className="category-header">
-              <h2 className="category-title">Energy</h2>
-              <span className="category-count">12 articles</span>
-            </div>
-            <div className="news-grid">
-              <article className="news-card">
-                <div className="news-card-tag tag-energy">Energy</div>
-                <h3 className="news-card-title">Oil Market Dynamics: Supply Constraints and Demand Outlook</h3>
-                <p className="news-card-summary">
-                  Analysis of recent OPEC+ decisions and their impact on global crude prices, examining both 
-                  short-term volatility and longer-term structural shifts in the energy landscape.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 15, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
+          {selectedCategory === 'all' ? (
+            // Show all categories
+            categories.map(category => {
+              const categoryArticles = getCategoryArticles(category.id);
+              if (categoryArticles.length === 0) return null;
               
-              <article className="news-card">
-                <div className="news-card-tag tag-energy">Energy</div>
-                <h3 className="news-card-title">Natural Gas: Winter Demand Patterns and Storage Levels</h3>
-                <p className="news-card-summary">
-                  Examining the relationship between weather patterns, storage inventories, and natural gas 
-                  pricing dynamics in North American markets.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 8, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
+              return (
+                <div key={category.id} className="news-category" id={category.id}>
+                  <div className="category-header">
+                    <h2 className="category-title">{category.name}</h2>
+                    <span className="category-count">{categoryArticles.length} articles</span>
+                  </div>
+                  <div className="category-filters">
+                    {category.subcategories.map(sub => (
+                      <button
+                        key={sub.id}
+                        className={`subcategory-filter ${selectedSubcategory === sub.id ? 'active' : ''}`}
+                        onClick={() => {
+                          setSelectedCategory(category.id);
+                          setSelectedSubcategory(sub.id);
+                        }}
+                      >
+                        {sub.name}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="news-grid">
+                    {categoryArticles.map(article => (
+                      <article key={article.id} className="news-card">
+                        <div className={`news-card-tag tag-${category.id}`}>{category.name}</div>
+                        <div className="news-card-subcategory">{category.subcategories.find(s => s.id === article.subcategory)?.name}</div>
+                        <h3 className="news-card-title">{article.title}</h3>
+                        <p className="news-card-summary">{article.summary}</p>
+                        <div className="news-card-footer">
+                          <span className="news-card-date">{article.date}</span>
+                          <a href="#" className="news-card-link">Read More →</a>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
                 </div>
-              </article>
-              
-              <article className="news-card">
-                <div className="news-card-tag tag-energy">Energy</div>
-                <h3 className="news-card-title">Renewable Energy Transition: Impact on Traditional Energy Commodities</h3>
-                <p className="news-card-summary">
-                  Exploring how the shift toward renewable energy sources is reshaping demand patterns for 
-                  coal, oil, and natural gas in global markets.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 1, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
+              );
+            })
+          ) : (
+            // Show filtered results
+            <div className="news-category" id={selectedCategory}>
+              <div className="category-header">
+                <h2 className="category-title">{categories.find(c => c.id === selectedCategory)?.name}</h2>
+                <span className="category-count">{filteredArticles.length} articles</span>
+              </div>
+              {selectedCategory !== 'all' && (
+                <div className="category-filters">
+                  {categories.find(c => c.id === selectedCategory)?.subcategories.map(sub => (
+                    <button
+                      key={sub.id}
+                      className={`subcategory-filter ${selectedSubcategory === sub.id ? 'active' : ''}`}
+                      onClick={() => setSelectedSubcategory(sub.id)}
+                    >
+                      {sub.name}
+                    </button>
+                  ))}
                 </div>
-              </article>
+              )}
+              <div className="news-grid">
+                {filteredArticles.map(article => {
+                  const category = categories.find(c => c.id === article.category);
+                  return (
+                    <article key={article.id} className="news-card">
+                      <div className={`news-card-tag tag-${article.category}`}>{category?.name}</div>
+                      <div className="news-card-subcategory">{category?.subcategories.find(s => s.id === article.subcategory)?.name}</div>
+                      <h3 className="news-card-title">{article.title}</h3>
+                      <p className="news-card-summary">{article.summary}</p>
+                      <div className="news-card-footer">
+                        <span className="news-card-date">{article.date}</span>
+                        <a href="#" className="news-card-link">Read More →</a>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-
-          {/* Precious Metals */}
-          <div className="news-category" id="precious-metals">
-            <div className="category-header">
-              <h2 className="category-title">Precious Metals</h2>
-              <span className="category-count">8 articles</span>
-            </div>
-            <div className="news-grid">
-              <article className="news-card">
-                <div className="news-card-tag tag-metals">Precious Metals</div>
-                <h3 className="news-card-title">Gold Rally: Central Bank Policy and Safe Haven Demand</h3>
-                <p className="news-card-summary">
-                  Exploring the factors driving gold prices to multi-year highs, with focus on monetary policy 
-                  expectations and geopolitical risk premiums.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 12, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-              
-              <article className="news-card">
-                <div className="news-card-tag tag-metals">Precious Metals</div>
-                <h3 className="news-card-title">Silver: Industrial Demand Meets Monetary Hedge</h3>
-                <p className="news-card-summary">
-                  Analyzing silver's dual role as both an industrial metal and a monetary asset, and how 
-                  this creates unique price dynamics.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 5, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-              
-              <article className="news-card">
-                <div className="news-card-tag tag-metals">Precious Metals</div>
-                <h3 className="news-card-title">Platinum Group Metals: Automotive and Industrial Applications</h3>
-                <p className="news-card-summary">
-                  Examining the supply-demand fundamentals for platinum, palladium, and rhodium in the 
-                  context of automotive emissions standards and industrial uses.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">February 28, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-            </div>
-          </div>
-
-          {/* Base Metals */}
-          <div className="news-category" id="base-metals">
-            <div className="category-header">
-              <h2 className="category-title">Base Metals</h2>
-              <span className="category-count">10 articles</span>
-            </div>
-            <div className="news-grid">
-              <article className="news-card">
-                <div className="news-card-tag tag-base-metals">Base Metals</div>
-                <h3 className="news-card-title">Copper: The Barometer of Global Economic Health</h3>
-                <p className="news-card-summary">
-                  Understanding copper's role as an economic indicator and analyzing current market trends 
-                  in the context of global growth expectations.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 10, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-              
-              <article className="news-card">
-                <div className="news-card-tag tag-base-metals">Base Metals</div>
-                <h3 className="news-card-title">Aluminum: Energy Costs and Supply Chain Dynamics</h3>
-                <p className="news-card-summary">
-                  Examining how energy prices impact aluminum production costs and the resulting effects 
-                  on global supply chains and pricing.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 3, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-              
-              <article className="news-card">
-                <div className="news-card-tag tag-base-metals">Base Metals</div>
-                <h3 className="news-card-title">Zinc and Lead: Infrastructure Investment and Battery Demand</h3>
-                <p className="news-card-summary">
-                  Analyzing the impact of infrastructure spending and battery technology on zinc and lead 
-                  markets, including supply constraints.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">February 25, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-            </div>
-          </div>
-
-          {/* Agriculture */}
-          <div className="news-category" id="agriculture">
-            <div className="category-header">
-              <h2 className="category-title">Agriculture</h2>
-              <span className="category-count">15 articles</span>
-            </div>
-            <div className="news-grid">
-              <article className="news-card">
-                <div className="news-card-tag tag-agriculture">Agriculture</div>
-                <h3 className="news-card-title">Grain Markets: Weather Patterns and Export Dynamics</h3>
-                <p className="news-card-summary">
-                  Assessing the impact of El Niño on crop yields and the evolving trade flows in global 
-                  grain markets, particularly wheat and corn.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 10, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-              
-              <article className="news-card">
-                <div className="news-card-tag tag-agriculture">Agriculture</div>
-                <h3 className="news-card-title">Coffee: Climate Change and Supply Chain Resilience</h3>
-                <p className="news-card-summary">
-                  Exploring how changing weather patterns are affecting coffee production regions and the 
-                  implications for global supply and pricing.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 7, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-              
-              <article className="news-card">
-                <div className="news-card-tag tag-agriculture">Agriculture</div>
-                <h3 className="news-card-title">Sugar: Brazilian Production and Global Trade Flows</h3>
-                <p className="news-card-summary">
-                  Analyzing Brazil's role as a major sugar producer and exporter, and how production cycles 
-                  affect global pricing dynamics.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 2, 2024</span>
-                  <a href="#" className="news-card-link">Read More →</a>
-                </div>
-              </article>
-            </div>
-          </div>
-
-          {/* Weekly Trading Strategies */}
-          <div className="news-category" id="weekly-strategies">
-            <div className="category-header">
-              <h2 className="category-title">Weekly Trading Strategies</h2>
-              <span className="category-count">View all →</span>
-            </div>
-            <div className="news-grid">
-              <article className="news-card">
-                <div className="news-card-tag tag-strategies">Strategy</div>
-                <h3 className="news-card-title">Copper-Gold Spread: Industrial Demand vs. Monetary Policy</h3>
-                <p className="news-card-summary">
-                  Analyzing the divergence between copper (industrial demand proxy) and gold (monetary policy 
-                  proxy) to identify macro regime shifts.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 18, 2024</span>
-                  <Link to="/strategies" className="news-card-link">View Full Analysis →</Link>
-                </div>
-              </article>
-              
-              <article className="news-card">
-                <div className="news-card-tag tag-strategies">Strategy</div>
-                <h3 className="news-card-title">Crude Oil Contango Structure: Storage Economics</h3>
-                <p className="news-card-summary">
-                  Examining the WTI forward curve structure and the economics of storage, identifying 
-                  potential arbitrage opportunities.
-                </p>
-                <div className="news-card-footer">
-                  <span className="news-card-date">March 11, 2024</span>
-                  <Link to="/strategies" className="news-card-link">View Full Analysis →</Link>
-                </div>
-              </article>
-            </div>
-            <div className="category-footer">
-              <Link to="/strategies" className="btn btn-outline">View All Weekly Strategies</Link>
-            </div>
-          </div>
+          )}
         </div>
       </section>
     </>
@@ -265,4 +232,3 @@ const News = () => {
 };
 
 export default News;
-
