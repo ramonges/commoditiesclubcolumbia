@@ -78,6 +78,11 @@
   color: #006600;
 }
 
+.tag-strategies {
+  background-color: #f5e6ff;
+  color: #6600cc;
+}
+
 .article-subcategory {
   font-size: 0.85rem;
   color: var(--color-text-muted);

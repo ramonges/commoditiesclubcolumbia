@@ -33,7 +33,8 @@ const Admin = () => {
     energy: ['oil', 'natural-gas', 'power'],
     'precious-metals': ['gold', 'silver', 'copper'],
     'base-metals': ['aluminum', 'zinc-lead', 'nickel'],
-    agriculture: ['grains', 'soft-commodities']
+    agriculture: ['grains', 'soft-commodities'],
+    strategies: ['macro-focus', 'curve-analysis', 'commodity-specific', 'spread-analysis']
   };
 
   const addBlock = (type: ArticleBlock['type']) => {
@@ -201,6 +202,7 @@ const Admin = () => {
                   <option value="precious-metals">Precious Metals</option>
                   <option value="base-metals">Base Metals</option>
                   <option value="agriculture">Agriculture</option>
+                  <option value="strategies">Weekly Trading Strategies</option>
                 </select>
               </div>
               <div className="form-group">

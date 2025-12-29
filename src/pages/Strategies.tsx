@@ -1,6 +1,127 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import './Strategies.css';
 
+interface ArticleBlock {
+  block_type: string;
+  content: string | null;
+  image_url: string | null;
+  image_alt: string | null;
+  block_order: number;
+}
+
+interface StrategyArticle {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  subcategory: string;
+  published_at: string;
+  blocks: ArticleBlock[];
+}
+
 const Strategies = () => {
+  const [articles, setArticles] = useState<StrategyArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
+
+  useEffect(() => {
+    fetchStrategies();
+  }, []);
+
+  const fetchStrategies = async () => {
+    try {
+      setLoading(true);
+      // Fetch strategy articles
+      const { data: articlesData, error: articlesError } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('category', 'strategies')
+        .order('published_at', { ascending: false });
+
+      if (articlesError) throw articlesError;
+
+      // Fetch blocks for all articles
+      const articleIds = articlesData?.map(a => a.id) || [];
+      if (articleIds.length > 0) {
+        const { data: blocksData, error: blocksError } = await supabase
+          .from('article_blocks')
+          .select('*')
+          .in('article_id', articleIds)
+          .order('block_order', { ascending: true });
+
+        if (blocksError) throw blocksError;
+
+        // Combine articles with their blocks
+        const articlesWithBlocks: StrategyArticle[] = (articlesData || []).map(article => ({
+          id: article.id,
+          title: article.title,
+          subtitle: article.subtitle,
+          subcategory: article.subcategory,
+          published_at: article.published_at,
+          blocks: (blocksData || []).filter(b => b.article_id === article.id)
+        }));
+
+        setArticles(articlesWithBlocks);
+      } else {
+        setArticles([]);
+      }
+    } catch (error) {
+      console.error('Error fetching strategies:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const subcategories = [
+    { id: 'macro-focus', name: 'Macro Focus' },
+    { id: 'curve-analysis', name: 'Curve Analysis' },
+    { id: 'commodity-specific', name: 'Commodity-Specific' },
+    { id: 'spread-analysis', name: 'Spread Analysis' }
+  ];
+
+  const filteredArticles = selectedSubcategory === 'all' 
+    ? articles 
+    : articles.filter(a => a.subcategory === selectedSubcategory);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
+  const getSubcategoryName = (subcategory: string) => {
+    return subcategory.split('-').map(w => 
+      w.charAt(0).toUpperCase() + w.slice(1)
+    ).join(' ');
+  };
+
+  if (loading) {
+    return (
+      <>
+        <section className="page-header">
+          <div className="container">
+            <h1 className="page-title">Weekly Trading Strategies</h1>
+            <p className="page-subtitle">
+              Educational analysis focusing on macro themes, spreads, curves, and commodity-specific setups
+            </p>
+            <p className="page-disclaimer">
+              <em>Note: This content is for educational purposes only and does not constitute investment advice.</em>
+            </p>
+          </div>
+        </section>
+        <section className="section section-strategies-page">
+          <div className="container">
+            <p>Loading strategies...</p>
+          </div>
+        </section>
+      </>
+    );
+  }
+
   return (
     <>
       {/* Page Header */}
@@ -16,176 +137,92 @@ const Strategies = () => {
         </div>
       </section>
 
+      {/* Filter Section */}
+      {articles.length > 0 && (
+        <section className="section section-filters">
+          <div className="container">
+            <div className="filters-container">
+              <div className="filter-group">
+                <label className="filter-label">Filter by Type</label>
+                <select 
+                  className="filter-select"
+                  value={selectedSubcategory}
+                  onChange={(e) => setSelectedSubcategory(e.target.value)}
+                >
+                  <option value="all">All Strategies</option>
+                  {subcategories.map(sub => (
+                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Strategies Content */}
       <section className="section section-strategies-page">
         <div className="container">
-          <article className="strategy-article">
-            <div className="strategy-article-header">
-              <div className="strategy-article-meta">
-                <span className="strategy-article-week">Week of March 18, 2024</span>
-                <span className="strategy-article-focus">Macro Focus</span>
-              </div>
-              <h2 className="strategy-article-title">Copper-Gold Spread: Industrial Demand vs. Monetary Policy</h2>
+          {articles.length === 0 ? (
+            <div className="empty-strategies">
+              <p>No trading strategies published yet. Check back soon!</p>
             </div>
-            
-            <div className="strategy-article-content">
-              <h3>Overview</h3>
-              <p>
-                The copper-gold spread serves as a powerful indicator of macroeconomic regime shifts. 
-                Copper, often called "Dr. Copper" for its diagnostic value, reflects industrial demand and 
-                global growth expectations. Gold, conversely, responds to monetary policy, inflation expectations, 
-                and safe-haven demand. Analyzing their relative performance can reveal important insights about 
-                the economic environment.
-              </p>
-              
-              <h3>Current Market Context</h3>
-              <p>
-                Recent months have shown a notable divergence between copper and gold prices. While gold has 
-                reached multi-year highs on the back of central bank buying and geopolitical uncertainty, 
-                copper has been more volatile, reflecting mixed signals about global industrial demand.
-              </p>
-              
-              <h3>Key Factors</h3>
-              <ul>
-                <li><strong>Monetary Policy:</strong> Central bank rate decisions and forward guidance impact gold's 
-                opportunity cost and copper's financing costs</li>
-                <li><strong>China's Economy:</strong> As the world's largest copper consumer, Chinese economic data 
-                significantly influences copper prices</li>
-                <li><strong>Dollar Strength:</strong> Both metals are sensitive to USD movements, but often in 
-                different ways</li>
-                <li><strong>Geopolitical Risk:</strong> Gold benefits from safe-haven flows during periods of 
-                uncertainty</li>
-              </ul>
-              
-              <h3>Spread Analysis</h3>
-              <p>
-                The copper-gold ratio (copper price / gold price) has historically been a useful indicator. 
-                When the ratio is rising, it suggests strong industrial demand relative to monetary concerns. 
-                When falling, it indicates risk-off sentiment or monetary policy dominance.
-              </p>
-              
-              <h3>Educational Takeaways</h3>
-              <p>
-                This spread trade illustrates the importance of understanding different commodity drivers. 
-                While both are metals, their price dynamics reflect entirely different economic forces. 
-                Successful commodity trading requires analyzing these relationships and understanding when 
-                macro regimes shift.
-              </p>
-            </div>
-          </article>
-
-          <article className="strategy-article">
-            <div className="strategy-article-header">
-              <div className="strategy-article-meta">
-                <span className="strategy-article-week">Week of March 11, 2024</span>
-                <span className="strategy-article-focus">Curve Analysis</span>
-              </div>
-              <h2 className="strategy-article-title">Crude Oil Contango Structure: Storage Economics</h2>
-            </div>
-            
-            <div className="strategy-article-content">
-              <h3>Overview</h3>
-              <p>
-                The forward curve structure in crude oil markets provides valuable information about supply-demand 
-                dynamics, storage economics, and market expectations. Understanding contango (futures prices above 
-                spot) versus backwardation (futures prices below spot) is essential for commodity market analysis.
-              </p>
-              
-              <h3>Current Curve Structure</h3>
-              <p>
-                WTI crude oil has recently exhibited a contango structure, particularly in the near-term months. 
-                This suggests that the market expects current supply to exceed immediate demand, creating incentives 
-                for storage rather than immediate consumption.
-              </p>
-              
-              <h3>Storage Economics</h3>
-              <p>
-                In a contango market, traders can profit by:
-              </p>
-              <ul>
-                <li>Buying physical oil at spot prices</li>
-                <li>Storing it in tanks or tankers</li>
-                <li>Selling futures contracts at higher prices</li>
-                <li>Delivering the oil when the contract expires</li>
-              </ul>
-              <p>
-                This arbitrage opportunity exists until storage costs plus financing costs equal the contango spread. 
-                When storage fills up, the curve typically flattens or moves toward backwardation.
-              </p>
-              
-              <h3>Key Indicators</h3>
-              <ul>
-                <li><strong>Storage Levels:</strong> EIA weekly inventory reports show whether storage capacity is 
-                being utilized</li>
-                <li><strong>Time Spreads:</strong> The difference between nearby and deferred contracts indicates 
-                the strength of contango</li>
-                <li><strong>Floating Storage:</strong> Tanker rates and utilization indicate whether traders are 
-                storing oil at sea</li>
-              </ul>
-              
-              <h3>Educational Takeaways</h3>
-              <p>
-                Curve structure analysis is fundamental to commodity trading. The shape of the forward curve 
-                reflects market participants' expectations about future supply and demand, as well as the economics 
-                of storage and transportation. Understanding these dynamics helps traders identify opportunities and 
-                assess market conditions.
-              </p>
-            </div>
-          </article>
-
-          <article className="strategy-article">
-            <div className="strategy-article-header">
-              <div className="strategy-article-meta">
-                <span className="strategy-article-week">Week of March 4, 2024</span>
-                <span className="strategy-article-focus">Commodity-Specific</span>
-              </div>
-              <h2 className="strategy-article-title">Wheat-Corn Spread: Relative Value in Grain Markets</h2>
-            </div>
-            
-            <div className="strategy-article-content">
-              <h3>Overview</h3>
-              <p>
-                The wheat-corn spread is a classic agricultural commodity trade that reflects relative supply-demand 
-                dynamics between two major grains. Both are used for food and feed, but have different growing 
-                conditions, uses, and seasonal patterns.
-              </p>
-              
-              <h3>Fundamental Drivers</h3>
-              <p>
-                Wheat and corn prices are influenced by:
-              </p>
-              <ul>
-                <li><strong>Weather:</strong> Growing conditions in major producing regions (US, Russia, Ukraine, 
-                Argentina, Brazil)</li>
-                <li><strong>Export Demand:</strong> Global trade flows, particularly from major importers like 
-                China and Middle Eastern countries</li>
-                <li><strong>Feed Demand:</strong> Livestock production and feed usage</li>
-                <li><strong>Biofuel Policy:</strong> Corn ethanol mandates affect corn demand</li>
-              </ul>
-              
-              <h3>Spread Dynamics</h3>
-              <p>
-                Historically, wheat has traded at a premium to corn due to its higher protein content and use in 
-                human food products. However, this spread can widen or narrow based on relative supply-demand 
-                imbalances. When wheat supplies are tight relative to corn, the spread widens. When corn demand 
-                is strong (e.g., ethanol production), the spread can narrow.
-              </p>
-              
-              <h3>Current Analysis</h3>
-              <p>
-                Recent weather patterns in key wheat-growing regions have created supply concerns, while corn 
-                markets have been more balanced. This has led to a widening of the wheat-corn spread, reflecting 
-                the relative tightness in wheat supplies.
-              </p>
-              
-              <h3>Educational Takeaways</h3>
-              <p>
-                Spread trading in agricultural commodities requires understanding both individual commodity fundamentals 
-                and their relative relationships. Weather, policy, and demand factors can affect each commodity 
-                differently, creating trading opportunities based on relative value rather than absolute price levels.
-              </p>
-            </div>
-          </article>
+          ) : (
+            <>
+              {filteredArticles.map(article => (
+                <article key={article.id} className="strategy-article">
+                  <div className="strategy-article-header">
+                    <div className="strategy-article-meta">
+                      <span className="strategy-article-week">
+                        Week of {formatDate(article.published_at)}
+                      </span>
+                      <span className="strategy-article-focus">
+                        {getSubcategoryName(article.subcategory)}
+                      </span>
+                    </div>
+                    <h2 className="strategy-article-title">{article.title}</h2>
+                    {article.subtitle && (
+                      <p className="strategy-article-subtitle">{article.subtitle}</p>
+                    )}
+                  </div>
+                  
+                  <div className="strategy-article-content">
+                    {article.blocks.map((block, index) => (
+                      <div key={index} className={`strategy-block block-${block.block_type}`}>
+                        {block.block_type === 'text' && block.content && (
+                          <div className="strategy-text">
+                            {block.content.split('\n').map((paragraph, pIndex) => (
+                              paragraph.trim() && (
+                                <p key={pIndex}>{paragraph}</p>
+                              )
+                            ))}
+                          </div>
+                        )}
+                        {block.block_type === 'image' && block.image_url && (
+                          <figure className="strategy-image">
+                            <img 
+                              src={block.image_url} 
+                              alt={block.image_alt || ''} 
+                              loading="lazy"
+                            />
+                            {block.image_alt && (
+                              <figcaption>{block.image_alt}</figcaption>
+                            )}
+                          </figure>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="strategy-article-footer">
+                    <Link to={`/article/${article.id}`} className="strategy-read-more">
+                      Read Full Analysis →
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
         </div>
       </section>
     </>
@@ -193,4 +230,3 @@ const Strategies = () => {
 };
 
 export default Strategies;
-

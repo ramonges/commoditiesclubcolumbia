@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS articles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   subtitle TEXT,
-  category TEXT NOT NULL CHECK (category IN ('energy', 'precious-metals', 'base-metals', 'agriculture')),
+  category TEXT NOT NULL CHECK (category IN ('energy', 'precious-metals', 'base-metals', 'agriculture', 'strategies')),
   subcategory TEXT NOT NULL,
   author_id UUID REFERENCES team_members(id),
   author_email TEXT,
