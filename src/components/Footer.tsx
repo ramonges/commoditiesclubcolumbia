@@ -31,7 +31,7 @@ const Footer = () => {
           <div className="footer-right">
             <h4 className="footer-heading">Follow Us</h4>
             <a 
-              href="https://www.linkedin.com/company/columbia-commodity-club" 
+              href="https://www.linkedin.com/in/timothe-jekel/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="footer-linkedin"
