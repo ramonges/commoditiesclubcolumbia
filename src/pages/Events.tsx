@@ -18,7 +18,6 @@ interface Event {
 
 const Events = () => {
   const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
-  const [pastEvents, setPastEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,13 +60,7 @@ const Events = () => {
         return eventDate <= twoMonthsFromNow;
       });
 
-      const past = (data || []).filter(event => {
-        const eventDate = new Date(event.event_date);
-        return eventDate < now || event.is_past;
-      });
-
       setUpcomingEvents(validUpcoming);
-      setPastEvents(past);
     } catch (error) {
       console.error('Error fetching events:', error);
     } finally {
