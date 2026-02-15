@@ -3,7 +3,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import News from './pages/News';
-import Strategies from './pages/Strategies';
+import Research from './pages/Research';
 import Events from './pages/Events';
 import Admin from './pages/Admin';
 import ArticleDetail from './pages/ArticleDetail';
@@ -19,7 +19,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/news" element={<News />} />
             <Route path="/article/:id" element={<ArticleDetail />} />
-            <Route path="/strategies" element={<Strategies />} />
+            <Route path="/research" element={<Research />} />
+            <Route path="/strategies" element={<Research />} />
             <Route path="/events" element={<Events />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>

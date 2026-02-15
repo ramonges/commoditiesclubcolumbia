@@ -71,42 +71,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Weekly Trading Strategies Preview */}
-      <section className="section section-strategies">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Weekly Trading Strategies</h2>
-            <Link to="/strategies" className="section-link">View All Strategies →</Link>
-          </div>
-          <div className="strategies-grid">
-            <article className="strategy-card">
-              <div className="strategy-card-header">
-                <span className="strategy-card-week">Week of March 18, 2024</span>
-                <span className="strategy-card-focus">Macro Focus</span>
-              </div>
-              <h3 className="strategy-card-title">Copper-Gold Spread: Industrial Demand vs. Monetary Policy</h3>
-              <p className="strategy-card-summary">
-                Analyzing the divergence between copper (industrial demand proxy) and gold (monetary policy proxy) 
-                to identify macro regime shifts and potential spread trading opportunities.
-              </p>
-              <Link to="/strategies" className="strategy-card-link">View Full Analysis →</Link>
-            </article>
-            
-            <article className="strategy-card">
-              <div className="strategy-card-header">
-                <span className="strategy-card-week">Week of March 11, 2024</span>
-                <span className="strategy-card-focus">Curve Analysis</span>
-              </div>
-              <h3 className="strategy-card-title">Crude Oil Contango Structure: Storage Economics</h3>
-              <p className="strategy-card-summary">
-                Examining the WTI forward curve structure and the economics of storage, 
-                identifying potential arbitrage opportunities in the term structure.
-              </p>
-              <Link to="/strategies" className="strategy-card-link">View Full Analysis →</Link>
-            </article>
-          </div>
-        </div>
-      </section>
 
       {/* Upcoming Events Preview */}
       <section className="section section-events">
@@ -114,47 +78,6 @@ const Home = () => {
           <div className="section-header">
             <h2 className="section-title">Upcoming Events</h2>
             <Link to="/events" className="section-link">View All Events →</Link>
-          </div>
-          <div className="events-grid">
-            <article className="event-card" id="next-dinner">
-              <div className="event-card-date">
-                <span className="event-card-month">April</span>
-                <span className="event-card-day">12</span>
-              </div>
-              <div className="event-card-content">
-                <span className="event-card-type">Dinner</span>
-                <h3 className="event-card-title">Spring Commodities Dinner</h3>
-                <p className="event-card-description">
-                  Join us for an evening discussion on energy transition and its impact on commodity markets, 
-                  featuring industry professionals and student presentations.
-                </p>
-                <div className="event-card-meta">
-                  <span className="event-card-location">📍 Faculty House, Columbia University</span>
-                  <span className="event-card-time">6:00 PM</span>
-                </div>
-                <Link to="/events" className="event-card-link">Learn More →</Link>
-              </div>
-            </article>
-            
-            <article className="event-card">
-              <div className="event-card-date">
-                <span className="event-card-month">April</span>
-                <span className="event-card-day">25</span>
-              </div>
-              <div className="event-card-content">
-                <span className="event-card-type">Speaker Event</span>
-                <h3 className="event-card-title">Trading Floor Insights: A Career in Commodities</h3>
-                <p className="event-card-description">
-                  Guest speaker from a leading trading firm shares insights on career paths, 
-                  market-making strategies, and the day-to-day life of a commodity trader.
-                </p>
-                <div className="event-card-meta">
-                  <span className="event-card-location">📍 Uris Hall, Room 301</span>
-                  <span className="event-card-time">5:00 PM</span>
-                </div>
-                <Link to="/events" className="event-card-link">Learn More →</Link>
-              </div>
-            </article>
           </div>
         </div>
       </section>
@@ -168,7 +91,37 @@ const Home = () => {
               We collaborate with leading firms in commodities trading, energy, agriculture, and finance 
               to provide our members with industry insights, networking opportunities, and career pathways.
             </p>
-            <a href="mailto:tj2622@columbia.edu" className="btn btn-primary btn-large">Get In Touch</a>
+            <a href="mailto:columbia.commodity@gmail.com" className="btn btn-primary btn-large">Get In Touch</a>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Links Section */}
+      <section className="section section-social">
+        <div className="container">
+          <div className="social-content">
+            <h2 className="social-title">Follow Our Research</h2>
+            <p className="social-description">
+              Stay updated with our latest articles and analysis published on Substack and LinkedIn.
+            </p>
+            <div className="social-buttons">
+              <a 
+                href="https://substack.com/@columbiacommodities" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-large"
+              >
+                Follow on Substack
+              </a>
+              <a 
+                href="https://www.linkedin.com/company/columbia-commodities/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-outline btn-large"
+              >
+                Follow on LinkedIn
+              </a>
+            </div>
           </div>
         </div>
       </section>

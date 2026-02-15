@@ -104,12 +104,6 @@ const News = () => {
       { id: 'grains', name: 'Grains' },
       { id: 'soft-commodities', name: 'Soft Commodities' }
     ]},
-    { id: 'strategies', name: 'Weekly Trading Strategies', subcategories: [
-      { id: 'macro-focus', name: 'Macro Focus' },
-      { id: 'curve-analysis', name: 'Curve Analysis' },
-      { id: 'commodity-specific', name: 'Commodity-Specific' },
-      { id: 'spread-analysis', name: 'Spread Analysis' }
-    ]}
   ];
 
   const filteredArticles = articles.filter(article => {

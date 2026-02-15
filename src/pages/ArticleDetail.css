@@ -243,3 +243,22 @@
   }
 }
 
+.article-substack-cta {
+  margin-top: var(--spacing-2xl);
+  padding: var(--spacing-xl);
+  background-color: var(--color-bg-light);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.substack-cta-text {
+  font-size: 1.125rem;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-md);
+}
+
+.article-substack-cta .btn {
+  margin-top: var(--spacing-sm);
+}
+

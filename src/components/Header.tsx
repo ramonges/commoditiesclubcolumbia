@@ -35,8 +35,8 @@ const Header = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/strategies" className={`nav-link ${isActive('/strategies') ? 'active' : ''}`}>
-                  Weekly Trading Strategies
+                <Link to="/research" className={`nav-link ${isActive('/research') ? 'active' : ''}`}>
+                  Research
                 </Link>
               </li>
               <li>
@@ -48,8 +48,7 @@ const Header = () => {
           </nav>
           
           <div className="header-cta">
-            <Link to="/events#next-dinner" className="btn btn-primary">Next Event</Link>
-            <a href="mailto:tj2622@columbia.edu" className="btn btn-secondary">Partner With Us</a>
+            <a href="mailto:columbia.commodity@gmail.com" className="btn btn-secondary">Partner With Us</a>
           </div>
           
           <button 

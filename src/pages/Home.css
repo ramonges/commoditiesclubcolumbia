@@ -376,6 +376,57 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Social Links Section */
+.section-social {
+  background-color: var(--color-bg-light);
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+}
+
+.social-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.social-title {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.social-description {
+  font-size: 1.125rem;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.7;
+}
+
+.social-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .social-title {
+    font-size: 2rem;
+  }
+  
+  .social-description {
+    font-size: 1rem;
+  }
+  
+  .social-buttons {
+    flex-direction: column;
+  }
+  
+  .social-buttons .btn {
+    width: 100%;
+  }
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .news-grid,

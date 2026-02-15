@@ -193,6 +193,19 @@ const ArticleDetail = () => {
               <p>This article has no content yet.</p>
             </div>
           )}
+
+          {/* Substack Follow Button */}
+          <div className="article-substack-cta">
+            <p className="substack-cta-text">Want more research and analysis?</p>
+            <a 
+              href="https://substack.com/@columbiacommodities" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+            >
+              Follow us on Substack
+            </a>
+          </div>
         </article>
       </div>
     </div>

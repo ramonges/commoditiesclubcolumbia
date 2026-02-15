@@ -34,6 +34,11 @@ const Admin = () => {
   const [eventRsvpLink, setEventRsvpLink] = useState('');
   const [eventFeatured, setEventFeatured] = useState(false);
   
+  // Event editing state
+  const [events, setEvents] = useState<any[]>([]);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [editingEvent, setEditingEvent] = useState<any | null>(null);
+  
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -42,8 +47,59 @@ const Admin = () => {
       navigate('/');
     } else {
       setUser(authService.getCurrentUser());
+      if (activeTab === 'event') {
+        fetchEvents();
+      }
     }
-  }, [navigate]);
+  }, [navigate, activeTab]);
+
+  const fetchEvents = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .order('event_date', { ascending: false });
+      
+      if (error) throw error;
+      setEvents(data || []);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  const loadEventForEditing = (event: any) => {
+    const eventDate = new Date(event.event_date);
+    const month = (eventDate.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = eventDate.getUTCDate().toString().padStart(2, '0');
+    
+    setEventMonth(month);
+    setEventDay(day);
+    setEventType(event.event_type);
+    setEventTitle(event.title);
+    setEventSummary(event.summary);
+    setEventAddress(event.address);
+    setEventTimeFrom(event.time_from);
+    setEventTimeTo(event.time_to || '');
+    setEventRsvpLink(event.rsvp_link || '');
+    setEventFeatured(event.featured);
+    setSelectedEventId(event.id);
+    setEditingEvent(event);
+  };
+
+  const resetEventForm = () => {
+    setEventMonth('');
+    setEventDay('');
+    setEventType('Dinner');
+    setEventTitle('');
+    setEventSummary('');
+    setEventAddress('');
+    setEventTimeFrom('');
+    setEventTimeTo('');
+    setEventRsvpLink('');
+    setEventFeatured(false);
+    setSelectedEventId(null);
+    setEditingEvent(null);
+  };
 
   const categories = {
     energy: ['oil', 'natural-gas', 'power'],
@@ -187,45 +243,64 @@ const Admin = () => {
     setMessage(null);
 
     try {
-      // Parse date from month and day
+      // Parse date from month and day using UTC to avoid timezone issues
       const currentYear = new Date().getFullYear();
       const dateString = `${currentYear}-${eventMonth.padStart(2, '0')}-${eventDay.padStart(2, '0')}`;
-      const eventDateObj = new Date(dateString);
+      // Create date in UTC to avoid timezone shifts
+      const [year, month, day] = dateString.split('-').map(Number);
+      const eventDateObj = new Date(Date.UTC(year, month - 1, day));
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
       
       // Check if event is in the past
-      const isPast = eventDateObj < new Date();
+      const isPast = eventDateObj < now;
 
-      const { error } = await supabase
-        .from('events')
-        .insert({
-          event_date: dateString,
-          event_type: eventType,
-          title: eventTitle,
-          summary: eventSummary,
-          address: eventAddress,
-          time_from: eventTimeFrom,
-          time_to: eventTimeTo || null,
-          rsvp_link: eventRsvpLink || null,
-          featured: eventFeatured,
-          is_past: isPast,
-          author_email: user.email
-        });
+      if (selectedEventId && editingEvent) {
+        // Update existing event
+        const { error } = await supabase
+          .from('events')
+          .update({
+            event_date: dateString,
+            event_type: eventType,
+            title: eventTitle,
+            summary: eventSummary,
+            address: eventAddress,
+            time_from: eventTimeFrom,
+            time_to: eventTimeTo || null,
+            rsvp_link: eventRsvpLink || null,
+            featured: eventFeatured,
+            is_past: isPast,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedEventId);
 
-      if (error) throw error;
+        if (error) throw error;
+        setMessage({ type: 'success', text: 'Event updated successfully!' });
+      } else {
+        // Create new event
+        const { error } = await supabase
+          .from('events')
+          .insert({
+            event_date: dateString,
+            event_type: eventType,
+            title: eventTitle,
+            summary: eventSummary,
+            address: eventAddress,
+            time_from: eventTimeFrom,
+            time_to: eventTimeTo || null,
+            rsvp_link: eventRsvpLink || null,
+            featured: eventFeatured,
+            is_past: isPast,
+            author_email: user.email
+          });
 
-      setMessage({ type: 'success', text: 'Event created successfully!' });
+        if (error) throw error;
+        setMessage({ type: 'success', text: 'Event created successfully!' });
+      }
       
-      // Reset form
-      setEventMonth('');
-      setEventDay('');
-      setEventType('Dinner');
-      setEventTitle('');
-      setEventSummary('');
-      setEventAddress('');
-      setEventTimeFrom('');
-      setEventTimeTo('');
-      setEventRsvpLink('');
-      setEventFeatured(false);
+      // Reset form and refresh events list
+      resetEventForm();
+      await fetchEvents();
       
       setTimeout(() => {
         navigate('/events');
@@ -306,7 +381,7 @@ const Admin = () => {
                   <option value="precious-metals">Precious Metals</option>
                   <option value="base-metals">Base Metals</option>
                   <option value="agriculture">Agriculture</option>
-                  <option value="strategies">Weekly Trading Strategies</option>
+                  <option value="strategies">Research</option>
                 </select>
               </div>
               <div className="form-group">
@@ -427,9 +502,67 @@ const Admin = () => {
 
         {/* Event Form */}
         {activeTab === 'event' && (
-          <form onSubmit={handleEventSubmit} className="admin-form">
-            <div className="form-section">
-              <h3 className="section-title">Event Details</h3>
+          <>
+            {/* Edit Previous Events Section */}
+            {events.length > 0 && (
+              <div className="form-section" style={{ marginBottom: 'var(--spacing-xl)' }}>
+                <h3 className="section-title">Edit Previous Events</h3>
+                <p className="form-hint" style={{ marginBottom: 'var(--spacing-md)' }}>
+                  Select an event below to edit its details, or create a new event.
+                </p>
+                <div className="events-list" style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+                  gap: 'var(--spacing-md)',
+                  marginBottom: 'var(--spacing-lg)'
+                }}>
+                  {events.map(event => {
+                    const eventDate = new Date(event.event_date);
+                    const dateStr = eventDate.toLocaleDateString('en-US', { 
+                      month: 'long', 
+                      day: 'numeric', 
+                      year: 'numeric' 
+                    });
+                    return (
+                      <div 
+                        key={event.id} 
+                        className={`event-edit-card ${selectedEventId === event.id ? 'selected' : ''}`}
+                        onClick={() => loadEventForEditing(event)}
+                        style={{
+                          padding: 'var(--spacing-md)',
+                          border: `2px solid ${selectedEventId === event.id ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          backgroundColor: selectedEventId === event.id ? 'var(--color-bg-light)' : 'var(--color-bg)',
+                          transition: 'all var(--transition-fast)'
+                        }}
+                      >
+                        <div style={{ fontWeight: 600, marginBottom: 'var(--spacing-xs)' }}>
+                          {event.title}
+                        </div>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                          {dateStr} • {event.event_type}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {editingEvent && (
+                  <button
+                    type="button"
+                    onClick={resetEventForm}
+                    className="btn btn-outline"
+                    style={{ marginBottom: 'var(--spacing-lg)' }}
+                  >
+                    Create New Event Instead
+                  </button>
+                )}
+              </div>
+            )}
+
+            <form onSubmit={handleEventSubmit} className="admin-form">
+              <div className="form-section">
+                <h3 className="section-title">{editingEvent ? 'Edit Event Details' : 'Event Details'}</h3>
               <div className="form-row">
                 <div className="form-group">
                   <label>Month *</label>
@@ -571,10 +704,21 @@ const Admin = () => {
 
             <div className="form-actions">
               <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
-                {loading ? 'Creating...' : 'Create Event'}
+                {loading ? (editingEvent ? 'Updating...' : 'Creating...') : (editingEvent ? 'Update Event' : 'Create Event')}
               </button>
+              {editingEvent && (
+                <button
+                  type="button"
+                  onClick={resetEventForm}
+                  className="btn btn-secondary"
+                  style={{ marginLeft: 'var(--spacing-md)' }}
+                >
+                  Cancel
+                </button>
+              )}
             </div>
           </form>
+          </>
         )}
       </div>
     </div>

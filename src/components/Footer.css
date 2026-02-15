@@ -70,7 +70,7 @@
   color: white;
 }
 
-.footer-linkedin {
+.footer-social-link {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -83,7 +83,7 @@
   margin-top: var(--spacing-sm);
 }
 
-.footer-linkedin:hover {
+.footer-social-link:hover {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.5);
   color: white;
@@ -113,7 +113,7 @@
   color: white;
 }
 
-.linkedin-icon {
+.social-icon {
   width: 32px;
   height: 32px;
   fill: currentColor;
@@ -180,7 +180,7 @@
     font-size: 0.85rem;
   }
   
-  .footer-linkedin,
+  .footer-social-link,
   .footer-login-btn {
     width: 100%;
     justify-content: center;
@@ -188,7 +188,7 @@
     padding: var(--spacing-sm);
   }
   
-  .linkedin-icon {
+  .social-icon {
     width: 24px;
     height: 24px;
   }

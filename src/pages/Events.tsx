@@ -46,17 +46,27 @@ const Events = () => {
       if (error) throw error;
 
       const now = new Date();
+      now.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
       const upcoming = (data || []).filter(event => {
         const eventDate = new Date(event.event_date);
+        eventDate.setHours(0, 0, 0, 0); // Set to start of day
         return eventDate >= now && !event.is_past;
       }).sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime());
+      
+      // Remove events with false dates (more than 2 months in the future or before current date)
+      const twoMonthsFromNow = new Date();
+      twoMonthsFromNow.setMonth(twoMonthsFromNow.getMonth() + 2);
+      const validUpcoming = upcoming.filter(event => {
+        const eventDate = new Date(event.event_date);
+        return eventDate <= twoMonthsFromNow;
+      });
 
       const past = (data || []).filter(event => {
         const eventDate = new Date(event.event_date);
         return eventDate < now || event.is_past;
       });
 
-      setUpcomingEvents(upcoming);
+      setUpcomingEvents(validUpcoming);
       setPastEvents(past);
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -66,10 +76,12 @@ const Events = () => {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const month = date.toLocaleDateString('en-US', { month: 'long' });
-    const day = date.getDate();
-    return { month, day };
+    // Parse date string as UTC to avoid timezone issues
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    const monthName = date.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' });
+    const dayNum = date.getUTCDate();
+    return { month: monthName, day: dayNum };
   };
 
   const formatTime = (timeFrom: string, timeTo: string | null) => {
@@ -171,35 +183,6 @@ const Events = () => {
             )}
           </div>
 
-          {/* Past Events */}
-          {pastEvents.length > 0 && (
-            <div className="events-section">
-              <h2 className="events-section-title">Past Events</h2>
-              <div className="events-grid">
-                {pastEvents.map(event => {
-                  const { month, day } = formatDate(event.event_date);
-                  
-                  return (
-                    <article key={event.id} className="event-card past">
-                      <div className="event-card-date">
-                        <span className="event-card-month">{month}</span>
-                        <span className="event-card-day">{day}</span>
-                      </div>
-                      <div className="event-card-content">
-                        <span className="event-card-type">{event.event_type}</span>
-                        <h3 className="event-card-title">{event.title}</h3>
-                        <p className="event-card-description">{event.summary}</p>
-                        <div className="event-card-meta">
-                          <span className="event-card-location">📍 {event.address}</span>
-                          <span className="event-card-time">Completed</span>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
       </section>
     </>
