@@ -160,7 +160,7 @@ const News = () => {
       {/* Page Header */}
       <section className="page-header">
         <div className="container">
-          <h1 className="page-title">Analysis</h1>
+          <h1 className="page-title">News</h1>
           <p className="page-subtitle">In-depth coverage of global commodity markets across energy, metals, and agriculture</p>
         </div>
       </section>

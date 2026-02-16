@@ -126,18 +126,18 @@ const Home = () => {
             </p>
             <div className="hero-cta">
               <Link to="/events" className="btn btn-primary btn-large">Join Our Next Event</Link>
-              <Link to="/news" className="btn btn-outline btn-large">Explore Our Analysis</Link>
+              <Link to="/news" className="btn btn-outline btn-large">Explore Our Research</Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Latest Analysis Preview */}
+      {/* Latest News Preview */}
       <section className="section section-news">
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Latest Analysis</h2>
-            <Link to="/news" className="section-link">View All Analysis →</Link>
+            <h2 className="section-title">Latest News</h2>
+            <Link to="/news" className="section-link">View All News →</Link>
           </div>
           {loading ? (
             <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)', color: 'var(--color-text-muted)' }}>
@@ -184,7 +184,7 @@ const Home = () => {
           <div className="partner-content">
             <h2 className="partner-title">Partner With Us</h2>
             <p className="partner-description">
-              We collaborate with leading firms in commodity trading, energy, agriculture, and mining 
+              We collaborate with leading firms in commodities trading, energy, agriculture, and finance 
               to provide our members with industry insights, networking opportunities, and career pathways.
             </p>
             <a href="mailto:columbia.commodity@gmail.com" className="btn btn-primary btn-large">Get In Touch</a>
@@ -196,9 +196,9 @@ const Home = () => {
       <section className="section section-social">
         <div className="container">
           <div className="social-content">
-            <h2 className="social-title">Follow Our Latest Analysis and Research</h2>
+            <h2 className="social-title">Follow Our Research</h2>
             <p className="social-description">
-              Stay updated with our latest analysis and research published on Substack and LinkedIn.
+              Stay updated with our latest articles and analysis published on Substack and LinkedIn.
             </p>
             <div className="social-buttons">
               <a 
