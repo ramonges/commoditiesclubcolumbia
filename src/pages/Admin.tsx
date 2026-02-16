@@ -41,6 +41,9 @@ const Admin = () => {
   
   // Article management state
   const [articles, setArticles] = useState<any[]>([]);
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+  const [editingArticle, setEditingArticle] = useState<any | null>(null);
+  const [originalPublishedAt, setOriginalPublishedAt] = useState<string | null>(null);
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -96,6 +99,60 @@ const Admin = () => {
     }
   };
 
+  const loadArticleForEditing = async (article: any) => {
+    setLoading(true);
+    setMessage(null);
+    
+    try {
+      // Fetch article blocks
+      const { data: blocksData, error: blocksError } = await supabase
+        .from('article_blocks')
+        .select('*')
+        .eq('article_id', article.id)
+        .order('block_order', { ascending: true });
+
+      if (blocksError) throw blocksError;
+
+      // Convert database blocks to form blocks
+      const formBlocks: ArticleBlock[] = (blocksData || []).map(block => ({
+        id: block.id,
+        type: block.block_type as ArticleBlock['type'],
+        content: block.content || '',
+        imageUrl: block.image_url || '',
+        imageAlt: block.image_alt || ''
+      }));
+
+      // Set form state
+      setCategory(article.category);
+      setSubcategory(article.subcategory);
+      setBlocks(formBlocks);
+      setSelectedArticleId(article.id);
+      setEditingArticle(article);
+      setOriginalPublishedAt(article.published_at);
+      
+      // Scroll to form
+      setTimeout(() => {
+        const formElement = document.querySelector('.admin-form');
+        if (formElement) {
+          formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to load article' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetArticleForm = () => {
+    setBlocks([]);
+    setCategory('energy');
+    setSubcategory('');
+    setSelectedArticleId(null);
+    setEditingArticle(null);
+    setOriginalPublishedAt(null);
+  };
+
   const handleDeleteArticle = async (articleId: string, articleTitle: string) => {
     if (!window.confirm(`Are you sure you want to delete "${articleTitle}"? This action cannot be undone.`)) {
       return;
@@ -122,6 +179,11 @@ const Admin = () => {
       if (articleError) throw articleError;
 
       setMessage({ type: 'success', text: 'Article deleted successfully!' });
+      
+      // Reset form if deleting the currently edited article
+      if (selectedArticleId === articleId) {
+        resetArticleForm();
+      }
       
       // Refresh articles list
       await fetchArticles();
@@ -280,43 +342,84 @@ const Admin = () => {
     setMessage(null);
 
     try {
-      // Create article
-      const { data: article, error: articleError } = await supabase
-        .from('articles')
-        .insert({
-          title: blocks.find(b => b.type === 'title')?.content || 'Untitled',
-          subtitle: blocks.find(b => b.type === 'subtitle')?.content || null,
-          category,
-          subcategory,
-          author_email: user.email
-        })
-        .select()
-        .single();
+      if (selectedArticleId && editingArticle) {
+        // Update existing article - preserve original published_at date
+        const { error: articleError } = await supabase
+          .from('articles')
+          .update({
+            title: blocks.find(b => b.type === 'title')?.content || 'Untitled',
+            subtitle: blocks.find(b => b.type === 'subtitle')?.content || null,
+            category,
+            subcategory,
+            published_at: originalPublishedAt, // Keep original publication date
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedArticleId);
 
-      if (articleError) throw articleError;
+        if (articleError) throw articleError;
 
-      // Create article blocks
-      const blocksToInsert = blocks.map((block, index) => ({
-        article_id: article.id,
-        block_type: block.type,
-        block_order: index,
-        content: block.type !== 'image' ? block.content : null,
-        image_url: block.type === 'image' ? block.imageUrl : null,
-        image_alt: block.type === 'image' ? block.imageAlt : null
-      }));
+        // Delete old blocks
+        const { error: deleteBlocksError } = await supabase
+          .from('article_blocks')
+          .delete()
+          .eq('article_id', selectedArticleId);
 
-      const { error: blocksError } = await supabase
-        .from('article_blocks')
-        .insert(blocksToInsert);
+        if (deleteBlocksError) throw deleteBlocksError;
 
-      if (blocksError) throw blocksError;
+        // Insert updated blocks
+        const blocksToInsert = blocks.map((block, index) => ({
+          article_id: selectedArticleId,
+          block_type: block.type,
+          block_order: index,
+          content: block.type !== 'image' ? block.content : null,
+          image_url: block.type === 'image' ? block.imageUrl : null,
+          image_alt: block.type === 'image' ? block.imageAlt : null
+        }));
 
-      setMessage({ type: 'success', text: 'Article published successfully!' });
-      setBlocks([]);
-      setCategory('energy');
-      setSubcategory('');
-      
-      // Refresh articles list
+        const { error: blocksError } = await supabase
+          .from('article_blocks')
+          .insert(blocksToInsert);
+
+        if (blocksError) throw blocksError;
+
+        setMessage({ type: 'success', text: 'Article updated successfully!' });
+      } else {
+        // Create new article
+        const { data: article, error: articleError } = await supabase
+          .from('articles')
+          .insert({
+            title: blocks.find(b => b.type === 'title')?.content || 'Untitled',
+            subtitle: blocks.find(b => b.type === 'subtitle')?.content || null,
+            category,
+            subcategory,
+            author_email: user.email
+          })
+          .select()
+          .single();
+
+        if (articleError) throw articleError;
+
+        // Create article blocks
+        const blocksToInsert = blocks.map((block, index) => ({
+          article_id: article.id,
+          block_type: block.type,
+          block_order: index,
+          content: block.type !== 'image' ? block.content : null,
+          image_url: block.type === 'image' ? block.imageUrl : null,
+          image_alt: block.type === 'image' ? block.imageAlt : null
+        }));
+
+        const { error: blocksError } = await supabase
+          .from('article_blocks')
+          .insert(blocksToInsert);
+
+        if (blocksError) throw blocksError;
+
+        setMessage({ type: 'success', text: 'Article published successfully!' });
+      }
+
+      // Reset form and refresh articles list
+      resetArticleForm();
       await fetchArticles();
       
       setTimeout(() => {
@@ -468,7 +571,7 @@ const Admin = () => {
               <div className="form-section" style={{ marginBottom: 'var(--spacing-xl)' }}>
                 <h3 className="section-title">Manage Articles</h3>
                 <p className="form-hint" style={{ marginBottom: 'var(--spacing-md)' }}>
-                  View and delete existing articles. You can create new articles below.
+                  Click an article to edit it, or use the delete button to remove it. You can also create a new article below.
                 </p>
                 <div className="articles-list" style={{ 
                   display: 'grid', 
@@ -493,19 +596,22 @@ const Admin = () => {
                     return (
                       <div 
                         key={article.id} 
-                        className="article-manage-card"
+                        className={`article-manage-card ${selectedArticleId === article.id ? 'selected' : ''}`}
                         style={{
                           padding: 'var(--spacing-md)',
-                          border: '2px solid var(--color-border)',
+                          border: `2px solid ${selectedArticleId === article.id ? 'var(--color-primary)' : 'var(--color-border)'}`,
                           borderRadius: '8px',
-                          backgroundColor: 'var(--color-bg)',
+                          backgroundColor: selectedArticleId === article.id ? 'var(--color-bg-light)' : 'var(--color-bg)',
                           transition: 'all var(--transition-fast)',
                           display: 'flex',
                           flexDirection: 'column',
                           gap: 'var(--spacing-sm)'
                         }}
                       >
-                        <div style={{ flex: 1 }}>
+                        <div 
+                          onClick={() => loadArticleForEditing(article)}
+                          style={{ cursor: 'pointer', flex: 1 }}
+                        >
                           <div style={{ fontWeight: 600, marginBottom: 'var(--spacing-xs)' }}>
                             {article.title}
                           </div>
@@ -513,7 +619,7 @@ const Admin = () => {
                             {categoryName} • {article.subcategory.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                           </div>
                           <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-                            {dateStr}
+                            Published: {dateStr}
                           </div>
                         </div>
                         <div style={{ 
@@ -525,7 +631,19 @@ const Admin = () => {
                         }}>
                           <button
                             type="button"
-                            onClick={() => handleDeleteArticle(article.id, article.title)}
+                            onClick={() => loadArticleForEditing(article)}
+                            className="btn btn-outline btn-sm"
+                            style={{ flex: 1, fontSize: '0.85rem', padding: 'var(--spacing-xs) var(--spacing-sm)' }}
+                            disabled={loading}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteArticle(article.id, article.title);
+                            }}
                             className="btn btn-danger btn-sm"
                             style={{ flex: 1, fontSize: '0.85rem', padding: 'var(--spacing-xs) var(--spacing-sm)' }}
                             disabled={loading}
@@ -537,12 +655,22 @@ const Admin = () => {
                     );
                   })}
                 </div>
+                {editingArticle && (
+                  <button
+                    type="button"
+                    onClick={resetArticleForm}
+                    className="btn btn-outline"
+                    style={{ marginBottom: 'var(--spacing-lg)' }}
+                  >
+                    Create New Article Instead
+                  </button>
+                )}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="admin-form">
           <div className="form-section">
-            <h3 className="section-title">Category & Subcategory</h3>
+            <h3 className="section-title">{editingArticle ? 'Edit Article' : 'Category & Subcategory'}</h3>
             <div className="form-row">
               <div className="form-group">
                 <label>Category</label>
@@ -670,8 +798,18 @@ const Admin = () => {
 
           <div className="form-actions">
             <button type="submit" className="btn btn-primary btn-large" disabled={loading || blocks.length === 0}>
-              {loading ? 'Publishing...' : 'Publish Article'}
+              {loading ? (editingArticle ? 'Updating...' : 'Publishing...') : (editingArticle ? 'Update Article' : 'Publish Article')}
             </button>
+            {editingArticle && (
+              <button
+                type="button"
+                onClick={resetArticleForm}
+                className="btn btn-secondary"
+                style={{ marginLeft: 'var(--spacing-md)' }}
+              >
+                Cancel
+              </button>
+            )}
           </div>
         </form>
           </>
