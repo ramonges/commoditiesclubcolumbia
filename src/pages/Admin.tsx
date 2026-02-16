@@ -262,7 +262,7 @@ const Admin = () => {
 
   const categories = {
     energy: ['oil', 'natural-gas', 'power'],
-    metals: ['gold', 'silver', 'copper', 'nickel', 'iron-ore'],
+    metals: ['gold', 'silver', 'copper', 'nickel', 'iron-ore', 'rare-earth'],
     agriculture: ['wheat', 'coffee', 'sugar', 'soybeans', 'corn'],
     strategies: ['macro-focus', 'curve-analysis', 'commodity-specific', 'spread-analysis']
   };

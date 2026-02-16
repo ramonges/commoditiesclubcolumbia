@@ -95,7 +95,8 @@ const News = () => {
       { id: 'silver', name: 'Silver' },
       { id: 'copper', name: 'Copper' },
       { id: 'nickel', name: 'Nickel' },
-      { id: 'iron-ore', name: 'Iron Ore' }
+      { id: 'iron-ore', name: 'Iron Ore' },
+      { id: 'rare-earth', name: 'Rare Earth' }
     ]},
     { id: 'agriculture', name: 'Agriculture', subcategories: [
       { id: 'wheat', name: 'Wheat' },
