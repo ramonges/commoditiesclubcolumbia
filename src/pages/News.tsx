@@ -99,8 +99,11 @@ const News = () => {
       { id: 'nickel', name: 'Nickel' }
     ]},
     { id: 'agriculture', name: 'Agriculture', subcategories: [
-      { id: 'grains', name: 'Grains' },
-      { id: 'soft-commodities', name: 'Soft Commodities' }
+      { id: 'wheat', name: 'Wheat' },
+      { id: 'coffee', name: 'Coffee' },
+      { id: 'sugar', name: 'Sugar' },
+      { id: 'soybeans', name: 'Soybeans' },
+      { id: 'corn', name: 'Corn' }
     ]},
   ];
 
