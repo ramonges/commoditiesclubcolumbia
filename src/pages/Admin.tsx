@@ -61,9 +61,51 @@ const Admin = () => {
         .order('event_date', { ascending: false });
       
       if (error) throw error;
-      setEvents(data || []);
+      
+      // Filter to show only future events (or events not marked as past)
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const futureEvents = (data || []).filter(event => {
+        const eventDate = new Date(event.event_date);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= now && !event.is_past;
+      });
+      
+      setEvents(futureEvents);
     } catch (error) {
       console.error('Error fetching events:', error);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: string, eventTitle: string) => {
+    if (!window.confirm(`Are you sure you want to delete "${eventTitle}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const { error } = await supabase
+        .from('events')
+        .delete()
+        .eq('id', eventId);
+
+      if (error) throw error;
+
+      setMessage({ type: 'success', text: 'Event deleted successfully!' });
+      
+      // Reset form if deleting the currently edited event
+      if (selectedEventId === eventId) {
+        resetEventForm();
+      }
+      
+      // Refresh events list
+      await fetchEvents();
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to delete event' });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -503,12 +545,12 @@ const Admin = () => {
         {/* Event Form */}
         {activeTab === 'event' && (
           <>
-            {/* Edit Previous Events Section */}
+            {/* Edit/Delete Future Events Section */}
             {events.length > 0 && (
               <div className="form-section" style={{ marginBottom: 'var(--spacing-xl)' }}>
-                <h3 className="section-title">Edit Previous Events</h3>
+                <h3 className="section-title">Manage Future Events</h3>
                 <p className="form-hint" style={{ marginBottom: 'var(--spacing-md)' }}>
-                  Select an event below to edit its details, or create a new event.
+                  Click an event to edit it, or use the delete button to remove it. You can also create a new event below.
                 </p>
                 <div className="events-list" style={{ 
                   display: 'grid', 
@@ -527,21 +569,65 @@ const Admin = () => {
                       <div 
                         key={event.id} 
                         className={`event-edit-card ${selectedEventId === event.id ? 'selected' : ''}`}
-                        onClick={() => loadEventForEditing(event)}
                         style={{
                           padding: 'var(--spacing-md)',
                           border: `2px solid ${selectedEventId === event.id ? 'var(--color-primary)' : 'var(--color-border)'}`,
                           borderRadius: '8px',
-                          cursor: 'pointer',
                           backgroundColor: selectedEventId === event.id ? 'var(--color-bg-light)' : 'var(--color-bg)',
-                          transition: 'all var(--transition-fast)'
+                          transition: 'all var(--transition-fast)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 'var(--spacing-sm)'
                         }}
                       >
-                        <div style={{ fontWeight: 600, marginBottom: 'var(--spacing-xs)' }}>
-                          {event.title}
+                        <div 
+                          onClick={() => loadEventForEditing(event)}
+                          style={{ cursor: 'pointer', flex: 1 }}
+                        >
+                          <div style={{ fontWeight: 600, marginBottom: 'var(--spacing-xs)' }}>
+                            {event.title}
+                          </div>
+                          <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                            {dateStr} • {event.event_type}
+                          </div>
+                          {event.featured && (
+                            <div style={{ 
+                              fontSize: '0.75rem', 
+                              color: 'var(--color-primary)', 
+                              fontWeight: 600,
+                              marginTop: 'var(--spacing-xs)'
+                            }}>
+                              ⭐ Featured Event
+                            </div>
+                          )}
                         </div>
-                        <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                          {dateStr} • {event.event_type}
+                        <div style={{ 
+                          display: 'flex', 
+                          gap: 'var(--spacing-xs)',
+                          marginTop: 'var(--spacing-sm)',
+                          paddingTop: 'var(--spacing-sm)',
+                          borderTop: '1px solid var(--color-border-light)'
+                        }}>
+                          <button
+                            type="button"
+                            onClick={() => loadEventForEditing(event)}
+                            className="btn btn-outline btn-sm"
+                            style={{ flex: 1, fontSize: '0.85rem', padding: 'var(--spacing-xs) var(--spacing-sm)' }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteEvent(event.id, event.title);
+                            }}
+                            className="btn btn-danger btn-sm"
+                            style={{ flex: 1, fontSize: '0.85rem', padding: 'var(--spacing-xs) var(--spacing-sm)' }}
+                            disabled={loading}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
                     );
