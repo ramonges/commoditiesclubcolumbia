@@ -200,8 +200,7 @@ const Admin = () => {
 
   const categories = {
     energy: ['oil', 'natural-gas', 'power'],
-    'precious-metals': ['gold', 'silver', 'copper'],
-    'base-metals': ['aluminum', 'zinc-lead', 'nickel'],
+    metals: ['gold', 'silver', 'copper', 'aluminum', 'zinc-lead', 'nickel'],
     agriculture: ['grains', 'soft-commodities'],
     strategies: ['macro-focus', 'curve-analysis', 'commodity-specific', 'spread-analysis']
   };
@@ -484,9 +483,13 @@ const Admin = () => {
                       day: 'numeric', 
                       year: 'numeric' 
                     });
-                    const categoryName = categories[article.category as keyof typeof categories] 
-                      ? article.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-                      : article.category;
+                    const getCategoryDisplayName = (cat: string) => {
+                      if (cat === 'precious-metals' || cat === 'base-metals' || cat === 'metals') {
+                        return 'Metals';
+                      }
+                      return cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    };
+                    const categoryName = getCategoryDisplayName(article.category);
                     return (
                       <div 
                         key={article.id} 
@@ -552,8 +555,7 @@ const Admin = () => {
                   className="form-select"
                 >
                   <option value="energy">Energy</option>
-                  <option value="precious-metals">Precious Metals</option>
-                  <option value="base-metals">Base Metals</option>
+                  <option value="metals">Metals</option>
                   <option value="agriculture">Agriculture</option>
                   <option value="strategies">Research</option>
                 </select>
@@ -672,6 +674,7 @@ const Admin = () => {
             </button>
           </div>
         </form>
+          </>
         )}
 
         {/* Event Form */}

@@ -88,8 +88,9 @@ const ArticleDetail = () => {
   const getCategoryName = (category: string) => {
     const categories: { [key: string]: string } = {
       'energy': 'Energy',
-      'precious-metals': 'Precious Metals',
-      'base-metals': 'Base Metals',
+      'precious-metals': 'Metals',
+      'base-metals': 'Metals',
+      'metals': 'Metals',
       'agriculture': 'Agriculture'
     };
     return categories[category] || category;
@@ -139,7 +140,7 @@ const ArticleDetail = () => {
         <article className="article-content">
           <div className="article-header">
             <div className="article-meta">
-              <span className={`article-category tag-${article.category}`}>
+              <span className={`article-category tag-${article.category === 'precious-metals' || article.category === 'base-metals' ? 'metals' : article.category}`}>
                 {getCategoryName(article.category)}
               </span>
               <span className="article-subcategory">

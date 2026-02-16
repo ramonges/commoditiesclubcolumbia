@@ -85,8 +85,9 @@ const Home = () => {
   const getCategoryName = (category: string) => {
     const categories: { [key: string]: string } = {
       'energy': 'Energy',
-      'precious-metals': 'Precious Metals',
-      'base-metals': 'Base Metals',
+      'precious-metals': 'Metals',
+      'base-metals': 'Metals',
+      'metals': 'Metals',
       'agriculture': 'Agriculture'
     };
     return categories[category] || category;
@@ -96,7 +97,8 @@ const Home = () => {
     const tagClasses: { [key: string]: string } = {
       'energy': 'tag-energy',
       'precious-metals': 'tag-metals',
-      'base-metals': 'tag-base-metals',
+      'base-metals': 'tag-metals',
+      'metals': 'tag-metals',
       'agriculture': 'tag-agriculture'
     };
     return tagClasses[category] || 'tag-energy';

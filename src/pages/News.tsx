@@ -90,12 +90,10 @@ const News = () => {
       { id: 'natural-gas', name: 'Natural Gas' },
       { id: 'power', name: 'Power' }
     ]},
-    { id: 'precious-metals', name: 'Precious Metals', subcategories: [
+    { id: 'metals', name: 'Metals', subcategories: [
       { id: 'gold', name: 'Gold' },
       { id: 'silver', name: 'Silver' },
-      { id: 'copper', name: 'Copper' }
-    ]},
-    { id: 'base-metals', name: 'Base Metals', subcategories: [
+      { id: 'copper', name: 'Copper' },
       { id: 'aluminum', name: 'Aluminum' },
       { id: 'zinc-lead', name: 'Zinc & Lead' },
       { id: 'nickel', name: 'Nickel' }
@@ -108,7 +106,11 @@ const News = () => {
 
   const filteredArticles = articles.filter(article => {
     if (selectedCategory === 'all') return true;
-    if (article.category !== selectedCategory) return false;
+    // Handle legacy categories - map old categories to new 'metals' category
+    const articleCategory = (article.category === 'precious-metals' || article.category === 'base-metals') 
+      ? 'metals' 
+      : article.category;
+    if (articleCategory !== selectedCategory) return false;
     if (selectedSubcategory === 'all') return true;
     return article.subcategory === selectedSubcategory;
   });
@@ -119,6 +121,10 @@ const News = () => {
   };
 
   const getCategoryArticles = (categoryId: string) => {
+    if (categoryId === 'metals') {
+      // Include both old categories for backward compatibility
+      return articles.filter(a => a.category === 'precious-metals' || a.category === 'base-metals' || a.category === 'metals');
+    }
     return articles.filter(a => a.category === categoryId);
   };
 
@@ -222,18 +228,25 @@ const News = () => {
                     ))}
                   </div>
                   <div className="news-grid">
-                    {categoryArticles.map(article => (
-                      <article key={article.id} className="news-card">
-                        <div className={`news-card-tag tag-${article.category}`}>{category.name}</div>
-                        <div className="news-card-subcategory">{category.subcategories.find(s => s.id === article.subcategory)?.name}</div>
-                        <h3 className="news-card-title">{article.title}</h3>
-                        <p className="news-card-summary">{getArticleSummary(article)}</p>
-                        <div className="news-card-footer">
-                          <span className="news-card-date">{formatDate(article.published_at)}</span>
-                          <Link to={`/article/${article.id}`} className="news-card-link">Read More →</Link>
-                        </div>
-                      </article>
-                    ))}
+                    {categoryArticles.map(article => {
+                      // Map old categories to new category name for display
+                      const displayCategory = (article.category === 'precious-metals' || article.category === 'base-metals') 
+                        ? 'metals' 
+                        : article.category;
+                      const tagClass = displayCategory === 'metals' ? 'tag-metals' : `tag-${displayCategory}`;
+                      return (
+                        <article key={article.id} className="news-card">
+                          <div className={`news-card-tag ${tagClass}`}>{category.name}</div>
+                          <div className="news-card-subcategory">{category.subcategories.find(s => s.id === article.subcategory)?.name}</div>
+                          <h3 className="news-card-title">{article.title}</h3>
+                          <p className="news-card-summary">{getArticleSummary(article)}</p>
+                          <div className="news-card-footer">
+                            <span className="news-card-date">{formatDate(article.published_at)}</span>
+                            <Link to={`/article/${article.id}`} className="news-card-link">Read More →</Link>
+                          </div>
+                        </article>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -260,10 +273,15 @@ const News = () => {
               )}
               <div className="news-grid">
                 {filteredArticles.map(article => {
-                  const category = categories.find(c => c.id === article.category);
+                  // Map old categories to new category for display
+                  const articleCategory = (article.category === 'precious-metals' || article.category === 'base-metals') 
+                    ? 'metals' 
+                    : article.category;
+                  const category = categories.find(c => c.id === articleCategory);
+                  const tagClass = articleCategory === 'metals' ? 'tag-metals' : `tag-${articleCategory}`;
                   return (
                     <article key={article.id} className="news-card">
-                      <div className={`news-card-tag tag-${article.category}`}>{category?.name}</div>
+                      <div className={`news-card-tag ${tagClass}`}>{category?.name}</div>
                       <div className="news-card-subcategory">{category?.subcategories.find(s => s.id === article.subcategory)?.name}</div>
                       <h3 className="news-card-title">{article.title}</h3>
                       <p className="news-card-summary">{getArticleSummary(article)}</p>
