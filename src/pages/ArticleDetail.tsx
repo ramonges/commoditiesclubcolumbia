@@ -102,6 +102,15 @@ const ArticleDetail = () => {
     ).join(' ');
   };
 
+  const getAuthorName = (email: string | null) => {
+    if (!email) return null;
+    const authorMap: { [key: string]: string } = {
+      'tj2622@columbia.edu': 'Timothe Jekel',
+      'ram2315@columbia.edu': 'Raphael Monges'
+    };
+    return authorMap[email] || email;
+  };
+
   if (loading) {
     return (
       <div className="article-detail-page">
@@ -149,8 +158,8 @@ const ArticleDetail = () => {
             </div>
             <div className="article-dates">
               <span className="article-date">Published: {formatDate(article.published_at)}</span>
-              {article.author_email && (
-                <span className="article-author">By {article.author_email}</span>
+              {article.author_email && getAuthorName(article.author_email) && (
+                <span className="article-author">By {getAuthorName(article.author_email)}</span>
               )}
             </div>
           </div>
