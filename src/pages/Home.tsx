@@ -184,7 +184,7 @@ const Home = () => {
           <div className="partner-content">
             <h2 className="partner-title">Partner With Us</h2>
             <p className="partner-description">
-              We collaborate with leading firms in commodities trading, energy, agriculture, and finance 
+              We collaborate with leading firms in commodity trading, energy, agriculture, and mining 
               to provide our members with industry insights, networking opportunities, and career pathways.
             </p>
             <a href="mailto:columbia.commodity@gmail.com" className="btn btn-primary btn-large">Get In Touch</a>
