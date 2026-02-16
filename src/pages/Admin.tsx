@@ -510,7 +510,7 @@ const Admin = () => {
                             {article.title}
                           </div>
                           <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-xs)' }}>
-                            {categoryName} • {article.subcategory.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            {categoryName} • {article.subcategory.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                           </div>
                           <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
                             {dateStr}
