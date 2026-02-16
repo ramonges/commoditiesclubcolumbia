@@ -159,6 +159,13 @@
   height: auto;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .article-image img {
+    border-radius: 4px;
+  }
 }
 
 .article-image figcaption {
@@ -260,5 +267,31 @@
 
 .article-substack-cta .btn {
   margin-top: var(--spacing-sm);
+}
+
+@media (max-width: 768px) {
+  .article-substack-cta {
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+  }
+  
+  .substack-cta-text {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-substack-cta {
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+  }
+  
+  .substack-cta-text {
+    font-size: 0.95rem;
+  }
+  
+  .article-substack-cta .btn {
+    width: 100%;
+  }
 }
 

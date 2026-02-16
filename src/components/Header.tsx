@@ -31,7 +31,7 @@ const Header = () => {
               </li>
               <li>
                 <Link to="/news" className={`nav-link ${isActive('/news') ? 'active' : ''}`}>
-                  News
+                  Analysis
                 </Link>
               </li>
               <li>

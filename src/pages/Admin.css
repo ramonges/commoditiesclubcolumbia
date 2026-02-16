@@ -342,10 +342,57 @@
   
   .admin-header {
     margin-bottom: var(--spacing-md);
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .admin-header button {
+    width: 100%;
   }
   
   .admin-title {
     font-size: 1.5rem;
+  }
+  
+  .admin-form {
+    padding: var(--spacing-md);
+  }
+  
+  .form-group label {
+    font-size: 0.85rem;
+  }
+  
+  .form-select,
+  .form-input {
+    font-size: 0.9rem;
+    padding: 0.625rem;
+  }
+  
+  .block-textarea {
+    font-size: 0.9rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+  }
+  
+  .block-buttons {
+    flex-direction: column;
+  }
+  
+  .block-buttons .btn {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .events-list,
+  .articles-list {
+    grid-template-columns: 1fr !important;
   }
   
   .admin-subtitle {

@@ -156,18 +156,25 @@
   text-align: center;
 }
 
-.strategy-image img {
+.research-image img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: block;
 }
 
-.strategy-image figcaption {
+.research-image figcaption {
   margin-top: var(--spacing-sm);
   font-size: 0.9rem;
   color: var(--color-text-muted);
   font-style: italic;
+}
+
+@media (max-width: 480px) {
+  .research-image img {
+    border-radius: 4px;
+  }
 }
 
 .research-article-footer {

@@ -273,6 +273,11 @@
     gap: var(--spacing-md);
   }
   
+  .filter-select {
+    font-size: 0.9rem;
+    padding: 0.625rem;
+  }
+  
   .category-header {
     flex-direction: column;
     align-items: flex-start;
@@ -281,6 +286,11 @@
   
   .category-title {
     font-size: 1.25rem;
+    line-height: 1.3;
+  }
+  
+  .category-count {
+    font-size: 0.85rem;
   }
   
   .news-card {
@@ -289,10 +299,22 @@
   
   .news-card-title {
     font-size: 1.125rem;
+    line-height: 1.3;
   }
   
   .news-card-summary {
     font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .news-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+  
+  .news-card-link {
+    font-size: 0.85rem;
   }
 }
 
