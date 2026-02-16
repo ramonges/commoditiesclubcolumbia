@@ -119,7 +119,7 @@ const Home = () => {
       <section className="hero">
         <div className="container">
           <div className="hero-content">
-            <h1 className="hero-title">A student-led platform<br />exploring global commodity markets.</h1>
+            <h1 className="hero-title">A student-led platform<br />exploring global commodity markets</h1>
             <p className="hero-description">
               We bring together research, market analysis, trading discussions, and industry engagement 
               to deepen understanding of commodity markets and their role in the global economy.
