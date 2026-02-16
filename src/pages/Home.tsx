@@ -1,7 +1,116 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import './Home.css';
 
+interface ArticleBlock {
+  block_type: string;
+  content: string | null;
+  image_url: string | null;
+  image_alt: string | null;
+  block_order: number;
+}
+
+interface NewsArticle {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  category: string;
+  subcategory: string;
+  published_at: string;
+  blocks: ArticleBlock[];
+}
+
 const Home = () => {
+  const [latestArticles, setLatestArticles] = useState<NewsArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchLatestArticles();
+  }, []);
+
+  const fetchLatestArticles = async () => {
+    try {
+      setLoading(true);
+      // Fetch articles excluding strategies category (which is now Research)
+      const { data: articlesData, error: articlesError } = await supabase
+        .from('articles')
+        .select('*')
+        .neq('category', 'strategies')
+        .order('published_at', { ascending: false })
+        .limit(3);
+
+      if (articlesError) throw articlesError;
+
+      if (!articlesData || articlesData.length === 0) {
+        setLatestArticles([]);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch blocks for the articles
+      const articleIds = articlesData.map(a => a.id);
+      const { data: blocksData, error: blocksError } = await supabase
+        .from('article_blocks')
+        .select('*')
+        .in('article_id', articleIds)
+        .order('block_order', { ascending: true });
+
+      if (blocksError) throw blocksError;
+
+      // Combine articles with their blocks
+      const articlesWithBlocks: NewsArticle[] = articlesData.map(article => ({
+        id: article.id,
+        title: article.title,
+        subtitle: article.subtitle,
+        category: article.category,
+        subcategory: article.subcategory,
+        published_at: article.published_at,
+        blocks: (blocksData || []).filter(b => b.article_id === article.id)
+      }));
+
+      setLatestArticles(articlesWithBlocks);
+    } catch (error) {
+      console.error('Error fetching latest articles:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  const getCategoryName = (category: string) => {
+    const categories: { [key: string]: string } = {
+      'energy': 'Energy',
+      'precious-metals': 'Precious Metals',
+      'base-metals': 'Base Metals',
+      'agriculture': 'Agriculture'
+    };
+    return categories[category] || category;
+  };
+
+  const getCategoryTagClass = (category: string) => {
+    const tagClasses: { [key: string]: string } = {
+      'energy': 'tag-energy',
+      'precious-metals': 'tag-metals',
+      'base-metals': 'tag-base-metals',
+      'agriculture': 'tag-agriculture'
+    };
+    return tagClasses[category] || 'tag-energy';
+  };
+
+  const getArticleSummary = (article: NewsArticle) => {
+    // Get first text block or subtitle as summary
+    const textBlock = article.blocks.find(b => b.block_type === 'text');
+    if (textBlock?.content) {
+      return textBlock.content.substring(0, 200) + (textBlock.content.length > 200 ? '...' : '');
+    }
+    return article.subtitle || 'No summary available';
+  };
+
   return (
     <>
       {/* Hero Section */}
@@ -28,46 +137,31 @@ const Home = () => {
             <h2 className="section-title">Latest News</h2>
             <Link to="/news" className="section-link">View All News →</Link>
           </div>
-          <div className="news-grid">
-            <article className="news-card">
-              <div className="news-card-tag tag-energy">Energy</div>
-              <h3 className="news-card-title">Oil Market Dynamics: Supply Constraints and Demand Outlook</h3>
-              <p className="news-card-summary">
-                Analysis of recent OPEC+ decisions and their impact on global crude prices, examining both 
-                short-term volatility and longer-term structural shifts.
-              </p>
-              <div className="news-card-footer">
-                <span className="news-card-date">March 15, 2024</span>
-                <Link to="/news#energy" className="news-card-link">Read More →</Link>
-              </div>
-            </article>
-            
-            <article className="news-card">
-              <div className="news-card-tag tag-metals">Precious Metals</div>
-              <h3 className="news-card-title">Gold Rally: Central Bank Policy and Safe Haven Demand</h3>
-              <p className="news-card-summary">
-                Exploring the factors driving gold prices to multi-year highs, with focus on monetary policy 
-                expectations and geopolitical risk premiums.
-              </p>
-              <div className="news-card-footer">
-                <span className="news-card-date">March 12, 2024</span>
-                <Link to="/news#precious-metals" className="news-card-link">Read More →</Link>
-              </div>
-            </article>
-            
-            <article className="news-card">
-              <div className="news-card-tag tag-agriculture">Agriculture</div>
-              <h3 className="news-card-title">Grain Markets: Weather Patterns and Export Dynamics</h3>
-              <p className="news-card-summary">
-                Assessing the impact of El Niño on crop yields and the evolving trade flows in global grain 
-                markets, particularly wheat and corn.
-              </p>
-              <div className="news-card-footer">
-                <span className="news-card-date">March 10, 2024</span>
-                <Link to="/news#agriculture" className="news-card-link">Read More →</Link>
-              </div>
-            </article>
-          </div>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)', color: 'var(--color-text-muted)' }}>
+              Loading articles...
+            </div>
+          ) : latestArticles.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)', color: 'var(--color-text-muted)' }}>
+              No articles published yet. Check back soon!
+            </div>
+          ) : (
+            <div className="news-grid">
+              {latestArticles.map(article => (
+                <article key={article.id} className="news-card">
+                  <div className={`news-card-tag ${getCategoryTagClass(article.category)}`}>
+                    {getCategoryName(article.category)}
+                  </div>
+                  <h3 className="news-card-title">{article.title}</h3>
+                  <p className="news-card-summary">{getArticleSummary(article)}</p>
+                  <div className="news-card-footer">
+                    <span className="news-card-date">{formatDate(article.published_at)}</span>
+                    <Link to={`/article/${article.id}`} className="news-card-link">Read More →</Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
