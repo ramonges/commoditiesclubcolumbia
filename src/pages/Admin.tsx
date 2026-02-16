@@ -39,6 +39,9 @@ const Admin = () => {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [editingEvent, setEditingEvent] = useState<any | null>(null);
   
+  // Article management state
+  const [articles, setArticles] = useState<any[]>([]);
+  
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -49,6 +52,8 @@ const Admin = () => {
       setUser(authService.getCurrentUser());
       if (activeTab === 'event') {
         fetchEvents();
+      } else if (activeTab === 'article') {
+        fetchArticles();
       }
     }
   }, [navigate, activeTab]);
@@ -74,6 +79,56 @@ const Admin = () => {
       setEvents(futureEvents);
     } catch (error) {
       console.error('Error fetching events:', error);
+    }
+  };
+
+  const fetchArticles = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .order('published_at', { ascending: false });
+      
+      if (error) throw error;
+      setArticles(data || []);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+    }
+  };
+
+  const handleDeleteArticle = async (articleId: string, articleTitle: string) => {
+    if (!window.confirm(`Are you sure you want to delete "${articleTitle}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      // Delete article blocks first (they have foreign key constraint)
+      const { error: blocksError } = await supabase
+        .from('article_blocks')
+        .delete()
+        .eq('article_id', articleId);
+
+      if (blocksError) throw blocksError;
+
+      // Then delete the article
+      const { error: articleError } = await supabase
+        .from('articles')
+        .delete()
+        .eq('id', articleId);
+
+      if (articleError) throw articleError;
+
+      setMessage({ type: 'success', text: 'Article deleted successfully!' });
+      
+      // Refresh articles list
+      await fetchArticles();
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to delete article' });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -262,6 +317,9 @@ const Admin = () => {
       setCategory('energy');
       setSubcategory('');
       
+      // Refresh articles list
+      await fetchArticles();
+      
       setTimeout(() => {
         navigate('/news');
       }, 2000);
@@ -405,7 +463,81 @@ const Admin = () => {
 
         {/* Article Form */}
         {activeTab === 'article' && (
-          <form onSubmit={handleSubmit} className="admin-form">
+          <>
+            {/* Manage Existing Articles Section */}
+            {articles.length > 0 && (
+              <div className="form-section" style={{ marginBottom: 'var(--spacing-xl)' }}>
+                <h3 className="section-title">Manage Articles</h3>
+                <p className="form-hint" style={{ marginBottom: 'var(--spacing-md)' }}>
+                  View and delete existing articles. You can create new articles below.
+                </p>
+                <div className="articles-list" style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+                  gap: 'var(--spacing-md)',
+                  marginBottom: 'var(--spacing-lg)'
+                }}>
+                  {articles.map(article => {
+                    const articleDate = new Date(article.published_at);
+                    const dateStr = articleDate.toLocaleDateString('en-US', { 
+                      month: 'long', 
+                      day: 'numeric', 
+                      year: 'numeric' 
+                    });
+                    const categoryName = categories[article.category as keyof typeof categories] 
+                      ? article.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+                      : article.category;
+                    return (
+                      <div 
+                        key={article.id} 
+                        className="article-manage-card"
+                        style={{
+                          padding: 'var(--spacing-md)',
+                          border: '2px solid var(--color-border)',
+                          borderRadius: '8px',
+                          backgroundColor: 'var(--color-bg)',
+                          transition: 'all var(--transition-fast)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 'var(--spacing-sm)'
+                        }}
+                      >
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 600, marginBottom: 'var(--spacing-xs)' }}>
+                            {article.title}
+                          </div>
+                          <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-xs)' }}>
+                            {categoryName} • {article.subcategory.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                          </div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+                            {dateStr}
+                          </div>
+                        </div>
+                        <div style={{ 
+                          display: 'flex', 
+                          gap: 'var(--spacing-xs)',
+                          marginTop: 'var(--spacing-sm)',
+                          paddingTop: 'var(--spacing-sm)',
+                          borderTop: '1px solid var(--color-border-light)'
+                        }}>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteArticle(article.id, article.title)}
+                            className="btn btn-danger btn-sm"
+                            style={{ flex: 1, fontSize: '0.85rem', padding: 'var(--spacing-xs) var(--spacing-sm)' }}
+                            disabled={loading}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="admin-form">
           <div className="form-section">
             <h3 className="section-title">Category & Subcategory</h3>
             <div className="form-row">
