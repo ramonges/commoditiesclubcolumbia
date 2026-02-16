@@ -51,10 +51,9 @@
 
 .hero-description {
   font-size: 1.125rem;
-  color: var(--color-text-light);
+  color: white;
   margin-bottom: var(--spacing-xl);
   line-height: 1.7;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .hero-cta {
