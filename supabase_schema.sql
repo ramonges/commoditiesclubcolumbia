@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS articles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   subtitle TEXT,
-  category TEXT NOT NULL CHECK (category IN ('energy', 'precious-metals', 'base-metals', 'agriculture', 'strategies')),
+  category TEXT NOT NULL CHECK (category IN ('energy', 'precious-metals', 'base-metals', 'metals', 'agriculture', 'strategies')),
   subcategory TEXT NOT NULL,
   author_id UUID REFERENCES team_members(id),
   author_email TEXT,
@@ -60,31 +60,40 @@ ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE article_blocks ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for team_members (only authenticated users can read)
+DROP POLICY IF EXISTS "Team members can read their own data" ON team_members;
 CREATE POLICY "Team members can read their own data" ON team_members
   FOR SELECT USING (true);
 
 -- RLS Policies for articles (public read, authenticated write)
+DROP POLICY IF EXISTS "Anyone can read published articles" ON articles;
 CREATE POLICY "Anyone can read published articles" ON articles
   FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Team members can insert articles" ON articles;
 CREATE POLICY "Team members can insert articles" ON articles
   FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Team members can update articles" ON articles;
 CREATE POLICY "Team members can update articles" ON articles
   FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Team members can delete articles" ON articles;
 CREATE POLICY "Team members can delete articles" ON articles
   FOR DELETE USING (true);
 
 -- RLS Policies for article_blocks
+DROP POLICY IF EXISTS "Anyone can read article blocks" ON article_blocks;
 CREATE POLICY "Anyone can read article blocks" ON article_blocks
   FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Team members can insert article blocks" ON article_blocks;
 CREATE POLICY "Team members can insert article blocks" ON article_blocks
   FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Team members can update article blocks" ON article_blocks;
 CREATE POLICY "Team members can update article blocks" ON article_blocks
   FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Team members can delete article blocks" ON article_blocks;
 CREATE POLICY "Team members can delete article blocks" ON article_blocks
   FOR DELETE USING (true);
