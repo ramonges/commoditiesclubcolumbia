@@ -140,8 +140,8 @@ const Home = () => {
             <h1 className="hero-title">
               {isMobile ? (
                 <>
-                  A student-led platform<br />
-                  exploring commodity markets
+                  A student-led platform exploring<br />
+                  commodity markets
                 </>
               ) : (
                 <>
