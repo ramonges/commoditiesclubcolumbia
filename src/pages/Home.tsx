@@ -119,9 +119,9 @@ const Home = () => {
       <section className="hero">
         <div className="container">
           <div className="hero-content">
-            <h1 className="hero-title">A student led platform on global commodities</h1>
+            <h1 className="hero-title">A student-led club for commodity markets</h1>
             <p className="hero-description">
-              We bring together research, analysis, and industry insight to understand global commodities.
+              Bridging the gap between academia and markets
             </p>
             <div className="hero-cta">
               <Link to="/events" className="btn btn-primary btn-large">Join Our Next Event</Link>
