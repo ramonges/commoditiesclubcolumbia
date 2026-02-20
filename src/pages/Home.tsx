@@ -3,6 +3,23 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import './Home.css';
 
+// Hook to detect mobile screen
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+};
+
 interface ArticleBlock {
   block_type: string;
   content: string | null;
@@ -24,6 +41,7 @@ interface NewsArticle {
 const Home = () => {
   const [latestArticles, setLatestArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     fetchLatestArticles();
@@ -119,7 +137,19 @@ const Home = () => {
       <section className="hero">
         <div className="container">
           <div className="hero-content">
-            <h1 className="hero-title">A student-led platform<br />exploring global commodity markets</h1>
+            <h1 className="hero-title">
+              {isMobile ? (
+                <>
+                  A student-led platform<br />
+                  exploring commodity markets
+                </>
+              ) : (
+                <>
+                  A student-led platform<br />
+                  exploring global commodity markets
+                </>
+              )}
+            </h1>
             <p className="hero-description">
               We bring together research, market analysis, trading discussions, and industry engagement 
               to deepen understanding of commodity markets and their role in the global economy.
