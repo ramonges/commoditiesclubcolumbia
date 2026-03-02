@@ -474,6 +474,21 @@
   text-align: left;
 }
 
+.founding-intro-centered {
+  text-align: center;
+  margin-top: var(--spacing-xl);
+}
+
+.founding-intro-centered .founding-list {
+  display: inline-block;
+  text-align: left;
+  margin-left: 0;
+}
+
+.founding-intro-centered .founding-actions {
+  justify-content: center;
+}
+
 .founding-text {
   font-size: 1rem;
   color: var(--color-text-light);
