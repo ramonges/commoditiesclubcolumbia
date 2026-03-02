@@ -271,27 +271,14 @@ const Home = () => {
 
           <div className="founding-intro founding-intro-centered">
             <h2 className="section-title">Become a 3C Member</h2>
-            <p className="founding-text">
-              Would you want to be highlighted as a 3C member on our website?
-            </p>
-            <p className="founding-text">
-              If so, please send:
-            </p>
-            <ul className="founding-list">
-              <li>A high-quality headshot</li>
-              <li>A short blurb (background + interests in commodities)</li>
-            </ul>
-            <p className="founding-text">
-              You can send it to us on WhatsApp.
-            </p>
             <div className="founding-actions">
               <a 
-                href="https://wa.me/33647412004" 
+                href="mailto:tj2622@columbia.edu" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn btn-primary btn-large"
               >
-                Contact us on WhatsApp
+                Contact us
               </a>
             </div>
           </div>
