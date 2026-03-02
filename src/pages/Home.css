@@ -463,6 +463,99 @@
   margin-top: auto;
 }
 
+/* Founding Members Section */
+.section-founding {
+  background-color: var(--color-bg);
+}
+
+.founding-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+  gap: var(--spacing-2xl);
+  align-items: flex-start;
+}
+
+.founding-intro {
+  max-width: 520px;
+}
+
+.founding-text {
+  font-size: 1rem;
+  color: var(--color-text-light);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-sm);
+}
+
+.founding-list {
+  margin: 0 0 var(--spacing-md) 1.25rem;
+  padding: 0;
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.founding-list li {
+  margin-bottom: 0.25rem;
+}
+
+.founding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.founding-profiles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.founding-profiles-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.founding-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.member-card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+}
+
+.member-card-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.member-card-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.member-card-bio {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* Partner Section */
 .section-partner {
   background-color: var(--color-primary);
@@ -563,6 +656,14 @@
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-sm);
+  }
+
+  .founding-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .founding-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -720,6 +821,22 @@
     font-size: 0.9rem;
     padding: 0.875rem 1.25rem;
     min-height: 48px;
+  }
+
+  .founding-layout {
+    gap: var(--spacing-xl);
+  }
+
+  .founding-actions {
+    flex-direction: column;
+  }
+
+  .founding-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-card-image {
+    height: 200px;
   }
 }
 

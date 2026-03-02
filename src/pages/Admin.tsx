@@ -967,6 +967,7 @@ const Admin = () => {
                     <option value="Speaker Event">Speaker Event</option>
                     <option value="Company Visit">Company Visit</option>
                     <option value="Members Meeting">Members Meeting</option>
+                    <option value="Conference">Conference</option>
                   </select>
                 </div>
               </div>
