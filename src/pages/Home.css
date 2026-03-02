@@ -468,15 +468,10 @@
   background-color: var(--color-bg);
 }
 
-.founding-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
-  gap: var(--spacing-2xl);
-  align-items: flex-start;
-}
-
 .founding-intro {
-  max-width: 520px;
+  max-width: 640px;
+  margin: 0 auto var(--spacing-xl);
+  text-align: left;
 }
 
 .founding-text {
@@ -515,13 +510,59 @@
   font-family: var(--font-display);
   font-size: 1.5rem;
   color: var(--color-primary);
-  margin: 0;
+  margin: 0 0 var(--spacing-md);
 }
 
-.founding-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-lg);
+.founding-carousel {
+  margin-top: var(--spacing-lg);
+}
+
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.carousel-track {
+  display: flex;
+  gap: var(--spacing-md);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: var(--spacing-sm);
+}
+
+.carousel-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.carousel-track::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.carousel-arrow {
+  border: 1px solid var(--color-border);
+  background-color: white;
+  color: var(--color-text);
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.carousel-arrow:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.carousel-arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .member-card {
@@ -533,6 +574,9 @@
   flex-direction: column;
   gap: var(--spacing-sm);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+  min-width: 260px;
+  max-width: 320px;
+  flex: 0 0 auto;
 }
 
 .member-card-image {
@@ -658,12 +702,8 @@
     gap: var(--spacing-sm);
   }
 
-  .founding-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .founding-grid {
-    grid-template-columns: 1fr 1fr;
+  .carousel-wrapper {
+    gap: var(--spacing-sm);
   }
 }
 
@@ -823,16 +863,20 @@
     min-height: 48px;
   }
 
-  .founding-layout {
-    gap: var(--spacing-xl);
+  .founding-intro {
+    margin-bottom: var(--spacing-lg);
   }
 
   .founding-actions {
     flex-direction: column;
   }
 
-  .founding-grid {
-    grid-template-columns: 1fr;
+  .carousel-wrapper {
+    gap: var(--spacing-sm);
+  }
+
+  .carousel-arrow {
+    display: none;
   }
 
   .member-card-image {

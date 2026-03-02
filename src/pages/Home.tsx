@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import './Home.css';
@@ -21,9 +21,48 @@ interface NewsArticle {
   blocks: ArticleBlock[];
 }
 
+const memberProfiles = [
+  {
+    name: 'Timothe Jekel',
+    image: '/assets/timothe_jekel.png',
+    bio: 'Timothe is originally from Paris and focuses on the intersection of geopolitics, commodity markets, and the energy transition. He has worked at the International Energy Agency during the EU gas crisis and at Kpler on global energy flows and market analysis. At Columbia, he founded the Columbia Commodity Club to foster open, rigorous and market-driven conversations on energy and commodities.'
+  },
+  {
+    name: 'Raphael Monges',
+    image: '/assets/raphael_monges.png',
+    bio: 'Raphael is a graduate student at Columbia Engineering, focusing on building tools that make trading energy, metals and agricultural commodities more efficient. He has worked with freight companies to help forecast maritime freight rates and is preparing for a career as a commodity trader, contributing researched articles to this platform.'
+  },
+  {
+    name: 'David Tang',
+    image: '/assets/david_tang.png',
+    bio: 'David is pursuing a Master’s in Climate & Society at Columbia Climate School, with a background in chemical engineering and atmospheric chemistry. He focuses on power, renewable energy certificates, carbon markets and emerging low‑carbon commodities, bridging climate science with energy market strategy to support the clean energy transition.'
+  },
+  {
+    name: 'Hans Sutikno',
+    image: '/assets/hans_sutikno.png',
+    bio: "Hans is an M.S. in Sustainability Management candidate at Columbia, focusing on energy finance as a Global Energy Fellow at the Center on Global Energy Policy. He has worked on critical minerals and transition finance research, and previously drove sustainable finance strategy and client engagement on decarbonization and green finance in Indonesia's banking sector."
+  },
+  {
+    name: 'Jasmin Zheng',
+    image: '/assets/jasmin_zheng.png',
+    bio: 'Jasmin is pursuing an MA in Climate and Society at the Columbia Climate School. She works at the intersection of climate policy, biodiversity, development finance and impact measurement, with a growing interest in how commodity markets can finance the energy and nature transition.'
+  },
+  {
+    name: 'Rahul Verma',
+    image: '/assets/rahul_verma.png',
+    bio: 'Rahul is an MS in Climate Finance student at Columbia. He previously worked at a critical minerals trading firm focused on battery metals and rare earths, and has experience in energy private equity. He supports the Columbia Commodity Club and is keen to deepen his involvement in global commodity markets.'
+  },
+  {
+    name: 'Salman Al Fathan',
+    image: '/assets/salman_al_fathan.png',
+    bio: 'Salman has five years of experience in partnership development, policy research, project management and data analysis. Now pursuing an MA in Climate and Society at Columbia, he is passionate about climate mitigation policies, the energy transition and driving sustainable climate investments.'
+  }
+];
+
 const Home = () => {
   const [latestArticles, setLatestArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetchLatestArticles();
@@ -113,6 +152,21 @@ const Home = () => {
     return article.subtitle || 'No summary available';
   };
 
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    const container = carouselRef.current;
+    if (!container || !container.firstElementChild) return;
+
+    const firstCard = container.firstElementChild as HTMLElement;
+    const cardWidth = firstCard.offsetWidth;
+    const gap = 16; // approximate gap between cards
+    const scrollAmount = cardWidth + gap;
+
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <>
       {/* Hero Section */}
@@ -177,151 +231,68 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Founding Members Call-to-Action */}
+      {/* Become 3C Member + Profiles Carousel */}
       <section className="section section-founding">
         <div className="container">
-          <div className="founding-layout">
-            <div className="founding-intro">
-              <h2 className="section-title">Become a 3C Founding Member</h2>
-              <p className="founding-text">
-                Would you want to be highlighted as a 3C founding member on our website?
-              </p>
-              <p className="founding-text">
-                If so, please send:
-              </p>
-              <ul className="founding-list">
-                <li>A high-quality headshot</li>
-                <li>A short blurb (background + interests in commodities)</li>
-              </ul>
-              <p className="founding-text">
-                You can send it to us on WhatsApp, or upload it to the Google Drive link below (better for picture quality).
-              </p>
-              <div className="founding-actions">
-                <a 
-                  href="https://wa.me/33647412004" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="btn btn-primary btn-large"
-                >
-                  WhatsApp +33 6 47 41 20 04
-                </a>
-                <a 
-                  href="https://drive.google.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="btn btn-outline btn-large"
-                >
-                  Upload via Google Drive
-                </a>
-              </div>
+          <div className="founding-intro">
+            <h2 className="section-title">Become a 3C Member</h2>
+            <p className="founding-text">
+              Would you want to be highlighted as a 3C member on our website?
+            </p>
+            <p className="founding-text">
+              If so, please send:
+            </p>
+            <ul className="founding-list">
+              <li>A high-quality headshot</li>
+              <li>A short blurb (background + interests in commodities)</li>
+            </ul>
+            <p className="founding-text">
+              You can send it to us on WhatsApp.
+            </p>
+            <div className="founding-actions">
+              <a 
+                href="https://wa.me/33647412004" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-large"
+              >
+                Contact us on WhatsApp
+              </a>
             </div>
+          </div>
 
-            <div className="founding-profiles">
-              <h3 className="founding-profiles-title">Founding Member Profiles</h3>
-              <div className="founding-grid">
-                <article className="member-card">
-                  <img
-                    src="/assets/timothe_jekel.png"
-                    alt="Timothe Jekel"
-                    className="member-card-image"
-                  />
-                  <h4 className="member-card-name">Timothe Jekel</h4>
-                  <p className="member-card-bio">
-                    Timothe is originally from Paris and focuses on the intersection of geopolitics, commodity markets,
-                    and the energy transition. He has worked at the International Energy Agency during the EU gas crisis
-                    and at Kpler on global energy flows and market analysis. At Columbia, he founded the Columbia
-                    Commodity Club to foster open, rigorous and market-driven conversations on energy and commodities.
-                  </p>
-                </article>
-
-                <article className="member-card">
-                  <img
-                    src="/assets/raphaelmonges-67b3e979-6bf4-46bf-b5fb-71271a96a77b.png"
-                    alt="Raphael Monges"
-                    className="member-card-image"
-                  />
-                  <h4 className="member-card-name">Raphael Monges</h4>
-                  <p className="member-card-bio">
-                    Raphael is a graduate student at Columbia Engineering, focusing on building tools that make trading
-                    energy, metals and agricultural commodities more efficient. He has worked with freight companies to
-                    help forecast maritime freight rates and is preparing for a career as a commodity trader, contributing
-                    researched articles to this platform.
-                  </p>
-                </article>
-
-                <article className="member-card">
-                  <img
-                    src="/assets/davidtang-e602b976-7584-4492-a694-79c7ec3b1e03.png"
-                    alt="David Tang"
-                    className="member-card-image"
-                  />
-                  <h4 className="member-card-name">David Tang</h4>
-                  <p className="member-card-bio">
-                    David is pursuing a Master’s in Climate &amp; Society at Columbia Climate School, with a background in
-                    chemical engineering and atmospheric chemistry. He focuses on power, renewable energy certificates,
-                    carbon markets and emerging low‑carbon commodities, bridging climate science with energy market
-                    strategy to support the clean energy transition.
-                  </p>
-                </article>
-
-                <article className="member-card">
-                  <img
-                    src="/assets/Hans_Sutkino-7df48fdb-5074-4cf7-b0c6-1bb1c041d82d.png"
-                    alt="Hans Sutikno"
-                    className="member-card-image"
-                  />
-                  <h4 className="member-card-name">Hans Sutikno</h4>
-                  <p className="member-card-bio">
-                    Hans is an M.S. in Sustainability Management candidate at Columbia, focusing on energy finance as a
-                    Global Energy Fellow at the Center on Global Energy Policy. He has worked on critical minerals and
-                    transition finance research, and previously drove sustainable finance strategy and client engagement
-                    on decarbonization and green finance in Indonesia&apos;s banking sector.
-                  </p>
-                </article>
-
-                <article className="member-card">
-                  <img
-                    src="/assets/jasmin_zheng-9219e371-ed12-4eb8-a588-012cacd65903.png"
-                    alt="Jasmin Zheng"
-                    className="member-card-image"
-                  />
-                  <h4 className="member-card-name">Jasmin Zheng</h4>
-                  <p className="member-card-bio">
-                    Jasmin is pursuing an MA in Climate and Society at the Columbia Climate School. She works at the
-                    intersection of climate policy, biodiversity, development finance and impact measurement, with a
-                    growing interest in how commodity markets can finance the energy and nature transition.
-                  </p>
-                </article>
-
-                <article className="member-card">
-                  <img
-                    src="/assets/Rahul_verma-4b88e090-3aea-48e2-99b1-61db6fd8d4c8.png"
-                    alt="Rahul Verma"
-                    className="member-card-image"
-                  />
-                  <h4 className="member-card-name">Rahul Verma</h4>
-                  <p className="member-card-bio">
-                    Rahul is an MS in Climate Finance student at Columbia. He previously worked at a critical minerals
-                    trading firm focused on battery metals and rare earths, and has experience in energy private equity.
-                    He supports the Columbia Commodity Club and is keen to deepen his involvement in global commodity
-                    markets.
-                  </p>
-                </article>
-
-                <article className="member-card">
-                  <img
-                    src="/assets/Salman_al_fathan-e0b32a02-0396-44b6-a478-c18bae201ad7.png"
-                    alt="Salman Al Fathan"
-                    className="member-card-image"
-                  />
-                  <h4 className="member-card-name">Salman Al Fathan</h4>
-                  <p className="member-card-bio">
-                    Salman has five years of experience in partnership development, policy research, project management
-                    and data analysis. Now pursuing an MA in Climate and Society at Columbia, he is passionate about
-                    climate mitigation policies, the energy transition and driving sustainable climate investments.
-                  </p>
-                </article>
+          <div className="founding-carousel">
+            <h3 className="founding-profiles-title">Member Profiles</h3>
+            <div className="carousel-wrapper">
+              <button
+                type="button"
+                className="carousel-arrow carousel-arrow-left"
+                onClick={() => scrollCarousel('left')}
+                aria-label="Scroll profiles left"
+              >
+                ‹
+              </button>
+              <div className="carousel-track" ref={carouselRef}>
+                {memberProfiles.map(profile => (
+                  <article key={profile.name} className="member-card">
+                    <img
+                      src={profile.image}
+                      alt={profile.name}
+                      className="member-card-image"
+                    />
+                    <h4 className="member-card-name">{profile.name}</h4>
+                    <p className="member-card-bio">{profile.bio}</p>
+                  </article>
+                ))}
               </div>
+              <button
+                type="button"
+                className="carousel-arrow carousel-arrow-right"
+                onClick={() => scrollCarousel('right')}
+                aria-label="Scroll profiles right"
+              >
+                ›
+              </button>
             </div>
           </div>
         </div>
