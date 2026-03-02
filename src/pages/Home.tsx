@@ -190,4 +190,147 @@ const Home = () => {
         <div className="container">
           <div className="section-header">
             <h2 className="section-title">Latest Analysis</h2>
-            <Link to="/news" className="section-link">View All Analys
+            <Link to="/news" className="section-link">View All Analysis &rarr;</Link>
+          </div>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)', color: 'var(--color-text-muted)' }}>
+              Loading articles...
+            </div>
+          ) : latestArticles.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)', color: 'var(--color-text-muted)' }}>
+              No articles published yet. Check back soon!
+            </div>
+          ) : (
+            <div className="news-grid">
+              {latestArticles.map(article => (
+                <article key={article.id} className="news-card">
+                  <div className={`news-card-tag ${getCategoryTagClass(article.category)}`}>
+                    {getCategoryName(article.category)}
+                  </div>
+                  <h3 className="news-card-title">{article.title}</h3>
+                  <p className="news-card-summary">{getArticleSummary(article)}</p>
+                  <div className="news-card-footer">
+                    <span className="news-card-date">{formatDate(article.published_at)}</span>
+                    <Link to={`/article/${article.id}`} className="news-card-link">Read More &rarr;</Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+
+      {/* Upcoming Events Preview */}
+      <section className="section section-events">
+        <div className="container">
+          <div className="section-header">
+            <h2 className="section-title">Upcoming Events</h2>
+            <Link to="/events" className="section-link">View All Events &rarr;</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Become 3C Member + Profiles Carousel */}
+      <section className="section section-founding">
+        <div className="container">
+          <div className="founding-carousel">
+            <h3 className="founding-profiles-title">Member Profiles</h3>
+            <div className="carousel-wrapper">
+              <button
+                type="button"
+                className="carousel-arrow carousel-arrow-left"
+                onClick={() => scrollCarousel('left')}
+                aria-label="Scroll profiles left"
+              >
+                ‹
+              </button>
+              <div className="carousel-track" ref={carouselRef}>
+                {memberProfiles.map(profile => (
+                  <article key={profile.name} className="member-card">
+                    <img
+                      src={profile.image}
+                      alt={profile.name}
+                      className="member-card-image"
+                    />
+                    <h4 className="member-card-name">{profile.name}</h4>
+                    <p className="member-card-bio">{profile.bio}</p>
+                  </article>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="carousel-arrow carousel-arrow-right"
+                onClick={() => scrollCarousel('right')}
+                aria-label="Scroll profiles right"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div className="founding-intro founding-intro-centered">
+            <h2 className="section-title">Become a 3C Member</h2>
+            <div className="founding-actions">
+              <a 
+                href="mailto:tj2622@columbia.edu" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-large"
+              >
+                Contact us
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partner Section */}
+      <section className="section section-partner" id="partner">
+        <div className="container">
+          <div className="partner-content">
+            <h2 className="partner-title">Partner With Us</h2>
+            <p className="partner-description">
+              We collaborate with leading firms in commodity trading, energy, agriculture, and mining 
+              to provide our members with industry insights, networking opportunities, and career pathways.
+            </p>
+            <a href="mailto:columbia.commodity@gmail.com" className="btn btn-primary btn-large">Get In Touch</a>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Links Section */}
+      <section className="section section-social">
+        <div className="container">
+          <div className="social-content">
+            <h2 className="social-title">Follow Our Latest Analysis and Research</h2>
+            <p className="social-description">
+              Stay updated with our latest analysis and research published on Substack and LinkedIn.
+            </p>
+            <div className="social-buttons">
+              <a 
+                href="https://substack.com/@columbiacommodities" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-large"
+              >
+                Follow on Substack
+              </a>
+              <a 
+                href="https://www.linkedin.com/company/columbia-commodities/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-outline btn-large"
+              >
+                Follow on LinkedIn
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default Home;
+
