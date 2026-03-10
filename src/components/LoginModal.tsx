@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { authService } from '../lib/auth';
 import './LoginModal.css';
 
@@ -35,7 +36,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>×</button>
@@ -69,7 +70,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

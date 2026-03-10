@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { authService } from '../lib/auth';
+import LoginModal from './LoginModal';
 import './Header.css';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const isAuthenticated = authService.isAuthenticated();
   const location = useLocation();
 
   useEffect(() => {
@@ -49,9 +53,22 @@ const Header = () => {
           
           <div className="header-cta">
             <a href="mailto:columbia.commodity@gmail.com" className="btn btn-secondary">Partner With Us</a>
+            {!isAuthenticated ? (
+              <button onClick={() => setIsLoginOpen(true)} className="btn btn-secondary">
+                Log In
+              </button>
+            ) : (
+              <Link to="/admin" className="btn btn-secondary">Admin Panel</Link>
+            )}
           </div>
-          
-          <button 
+
+          <LoginModal
+            isOpen={isLoginOpen}
+            onClose={() => setIsLoginOpen(false)}
+            onLogin={() => window.location.reload()}
+          />
+
+          <button
             className="mobile-menu-toggle" 
             aria-label="Toggle menu"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

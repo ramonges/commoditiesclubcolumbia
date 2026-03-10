@@ -25,7 +25,23 @@ const memberProfiles = [
   {
     name: 'Timothe Jekel',
     image: '/assets/timothe_jekel.png',
-    bio: 'Timothe is originally from Paris and focuses on the intersection of geopolitics, commodity markets, and the energy transition. He has worked at the International Energy Agency during the EU gas crisis and at Kpler on global energy flows and market analysis. At Columbia, he founded the Columbia Commodity Club to foster open, rigorous and market-driven conversations on energy and commodities.'
+    bio: 'Timothe focuses on commodity markets through the lens of geopolitics and the energy transition. He has worked at the International Energy Agency during the EU gas crisis and at Kpler focusing on global energy flows and market analysis. He founded the Columbia Commodity Club to foster open, rigorous and market-driven conversations.'
+  },
+  {
+    name: 'Hans Sutikno',
+    image: '/assets/hans_sutikno.png',
+    bio: "Hans is an M.S. in Sustainability Management candidate at Columbia, focusing on energy finance as a Global Energy Fellow at the Center on Global Energy Policy. He has worked on critical minerals and transition finance research, and previously drove sustainable finance strategy and client engagement on decarbonization and green finance in Indonesia's banking sector."
+  },
+   {
+    name: 'Rahul Verma',
+    image: '/assets/rahul_verma.png',
+    bio: 'Rahul is an MS in Climate Finance student at Columbia. He previously worked at a critical minerals trading firm focused on battery metals and rare earths, and in energy private equity at Omidyar Ventures and Blackstone.'
+  },
+  {
+    name: 'Priyal Patel',
+    image: '/assets/Priyal_Patel.jpg',
+    imagePosition: 'top',
+    bio: 'Priyal is a climate finance professional specializing in ESG reporting, emissions analysis, and sustainability program implementation, and she is currently in the inaugural M.S. in Climate Finance class at Columbia. Her data-driven research focuses on capital flows in mining and expanding data center infrastructure, driven by her interest in commodity markets, energy costs, and critical mineral demand.'
   },
   {
     name: 'Raphael Monges',
@@ -33,24 +49,31 @@ const memberProfiles = [
     bio: 'Raphael is a graduate student at Columbia Engineering, focusing on building tools that make trading energy, metals and agricultural commodities more efficient. He has worked with freight companies to help forecast maritime freight rates and is preparing for a career as a commodity trader, contributing researched articles to this platform.'
   },
   {
-    name: 'David Tang',
-    image: '/assets/david_tang.png',
-    bio: 'David is pursuing a Master’s in Climate & Society at Columbia Climate School, with a background in chemical engineering and atmospheric chemistry. He focuses on power, renewable energy certificates, carbon markets and emerging low‑carbon commodities, bridging climate science with energy market strategy to support the clean energy transition.'
+    name: 'Mauricio Del Rio Hinojosa',
+    image: '/assets/Mauricio.PNG',
+    imagePosition: 'top',
+    bio: 'Mauricio Del Rio Hinojosa works at a macro hedge fund in NYC, specializing in commodities, primarily energy. He is pursuing a master’s degree focused on renewable energy and energy policy. As a member of the Columbia Commodity Club, he aims to foster dialogue between students and experienced macro hedge fund professionals to share their perspectives and insights.'
   },
   {
-    name: 'Hans Sutikno',
-    image: '/assets/hans_sutikno.png',
-    bio: "Hans is an M.S. in Sustainability Management candidate at Columbia, focusing on energy finance as a Global Energy Fellow at the Center on Global Energy Policy. He has worked on critical minerals and transition finance research, and previously drove sustainable finance strategy and client engagement on decarbonization and green finance in Indonesia's banking sector."
+    name: 'Arka Khorchidian',
+    image: '/assets/Arka_Khorchidian.png',
+    bio: 'Arka is a graduate student doing his M.S. in Electrical Engineering. With a strong background in telecommunications and software development, he aims to apply his technical skills to the energy and commodities space, particularly in areas like energy data analytics, market modeling, and building tools for commodity trading. He is passionate about leveraging technology to drive insights and innovation in commodity markets.'
+  },
+  {
+    name: 'Noémie Remy',
+    image: '/assets/Noemie.jpeg',
+    imagePosition: 'top',
+    bio: 'Noémie Remy is a M.S. in Sustainability Management candidate, she brings a background in sustainable finance and consulting, with experience working at the intersection of capital allocation and environmental transition. She examines how critical mineral supply chains, commodity markets, and industrial policy shape the broader energy transition, linking upstream resource dynamics to downstream electrification strategies.'
+  },
+  {
+    name: 'David Tang',
+    image: '/assets/david_tang.png',
+    bio: 'David is pursuing a Master’s at Columbia’s Climate School, with a background in chemical engineering and atmospheric chemistry. He focuses on power, renewable energy certificates, carbon markets and emerging low‑carbon commodities, bridging climate science with energy market strategy to support the clean energy transition.'
   },
   {
     name: 'Jasmin Zheng',
     image: '/assets/jasmin_zheng.png',
-    bio: 'Jasmin is pursuing an MA in Climate and Society at the Columbia Climate School. She works at the intersection of climate policy, biodiversity, development finance and impact measurement, with a growing interest in how commodity markets can finance the energy and nature transition.'
-  },
-  {
-    name: 'Rahul Verma',
-    image: '/assets/rahul_verma.png',
-    bio: 'Rahul is an MS in Climate Finance student at Columbia. He previously worked at a critical minerals trading firm focused on battery metals and rare earths, and has experience in energy private equity. He supports the Columbia Commodity Club and is keen to deepen his involvement in global commodity markets.'
+    bio: 'Jasmin Zheng is pursuing an MA in Climate and Society at the Columbia Climate School. She focuses on the intersection of climate policy, biodiversity, development finance, and impact measurement. Her experience spans multilateral institutions and the private sector, including roles at the United Nations Environment Programme (UNEP), the UN Capital Development Fund (UNCDF), Ernst & Young, and Roland Berger.'
   },
   {
     name: 'Salman Al Fathan',
@@ -171,15 +194,18 @@ const Home = () => {
     <>
       {/* Hero Section */}
       <section className="hero">
-        <div className="container">
+        <div className="hero-overlay" />
+        <div className="container hero-container">
           <div className="hero-content">
-            <h1 className="hero-title">A student-led club for commodity markets</h1>
+            <h1 className="hero-title">
+              A Student-led Club For Commodity Markets
+            </h1>
             <p className="hero-description">
               Bridging the gap between academia and markets
             </p>
             <div className="hero-cta">
-              <Link to="/events" className="btn btn-primary btn-large">Join Our Next Event</Link>
-              <Link to="/news" className="btn btn-outline btn-large">Explore Our Research</Link>
+              <Link to="/events" className="btn btn-hero-primary btn-large">Join Our Next Event</Link>
+              <Link to="/news" className="btn btn-hero-outline btn-large">Read Our Analysis</Link>
             </div>
           </div>
         </div>
@@ -273,7 +299,7 @@ const Home = () => {
             <h2 className="section-title">Become a 3C Member</h2>
             <div className="founding-actions">
               <a 
-                href="mailto:tj2622@columbia.edu" 
+                href="mailto:columbia.commodity@gmail.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn btn-primary btn-large"
