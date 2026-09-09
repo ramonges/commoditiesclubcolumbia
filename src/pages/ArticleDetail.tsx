@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { getMemberByName, memberPath } from '../data/members';
 import { supabase } from '../lib/supabase';
 import './ArticleDetail.css';
 
@@ -66,9 +67,9 @@ const ArticleDetail = () => {
         ...articleData,
         blocks: blocksData || []
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching article:', err);
-      setError(err.message || 'Failed to load article');
+      setError(err instanceof Error ? err.message : 'Failed to load article');
     } finally {
       setLoading(false);
     }
@@ -139,6 +140,9 @@ const ArticleDetail = () => {
     );
   }
 
+  const authorName = getAuthorName(article.author_email);
+  const authorMember = authorName ? getMemberByName(authorName) : undefined;
+
   return (
     <div className="article-detail-page">
       <div className="container">
@@ -158,8 +162,15 @@ const ArticleDetail = () => {
             </div>
             <div className="article-dates">
               <span className="article-date">Published: {formatDate(article.published_at)}</span>
-              {article.author_email && getAuthorName(article.author_email) && (
-                <span className="article-author">By {getAuthorName(article.author_email)}</span>
+              {authorName && (
+                <span className="article-author">
+                  By{' '}
+                  {authorMember ? (
+                    <Link to={memberPath(authorMember)}>{authorName}</Link>
+                  ) : (
+                    authorName
+                  )}
+                </span>
               )}
             </div>
           </div>

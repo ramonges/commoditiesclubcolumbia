@@ -105,6 +105,15 @@
   font-style: italic;
 }
 
+.article-author a {
+  color: var(--color-primary);
+  font-style: italic;
+}
+
+.article-author a:hover {
+  color: var(--color-accent);
+}
+
 .article-blocks {
   display: flex;
   flex-direction: column;
